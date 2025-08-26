@@ -1,7 +1,9 @@
 import streamlit as st
 from config_pag import get_logo, set_background
 import pandas as pd
-import psycopg2 as psycopg
+import psycopg2 as pg
+
+
 
 st.set_page_config(layout='wide')
 

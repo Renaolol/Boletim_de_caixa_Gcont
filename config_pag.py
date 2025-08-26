@@ -2,6 +2,8 @@ import streamlit as st
 from base64 import b64encode
 from pathlib import Path
 
+
+
 def set_background():
     image_path = Path("fundo.png")
     if not image_path.exists():
