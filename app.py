@@ -69,4 +69,10 @@ with col1:
     with sub_col2:
         hist = st.selectbox("Selecione o Histórico Padrão: ", options=hist_padrao)
         comp_hist = st.text_area("Complemento de Histórico")
-    st.button("Salvar Lançamento")
+    salvar=st.button("Salvar Lançamento")
+
+lanctos=[]
+with col2:
+    if salvar:
+        lanctos=([valor,num_doc,hist,comp_hist])
+        st.dataframe(lanctos)
