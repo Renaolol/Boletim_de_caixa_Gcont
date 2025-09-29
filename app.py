@@ -2,10 +2,71 @@ import streamlit as st
 from config_pag import get_logo, set_background
 import pandas as pd
 import psycopg2 as pg
+from dependencies import get_clientes,get_contas,get_historicos,create_lancto,get_lancto, delete_lancto, formata_valor
 
 st.set_page_config(layout='wide', initial_sidebar_state='collapsed')
 
 get_logo()
 set_background()
-
+empresa = st.text_input("empresa",0,width=300)
+historico = get_historicos(empresa)
+conta = get_contas(empresa)
+conta_df = pd.DataFrame(conta,columns=["Empresa","Conta","Cod_contabil","Tipo"])
+contas_por_codigo = dict(zip(conta_df["Cod_contabil"], conta_df["Conta"]))
 st.title("Boletim de caixa online - GCONT")
+st.divider()
+col1,col2 = st.columns([1,3])
+with col1:
+    st.subheader("Novo lançamento")
+    data = st.date_input("Data",width=300,format="DD/MM/YYYY")
+    valor=st.number_input("Valor",width=300)
+    historico=st.selectbox("Histórico",historico,width=300)
+    complemento = st.text_area("Complemento",width=300)
+    cod_contabil = st.selectbox(
+        "Conta",
+        options=conta_df["Cod_contabil"],
+        format_func=lambda codigo: contas_por_codigo[codigo],
+        width=300,
+    )
+    tipo = st.radio("Tipo",["Entrada","Saída"],horizontal=True)
+    slv_lancto = st.button("Salvar Lançamento")
+    if slv_lancto:
+        create_lancto(empresa,data,valor,historico,complemento,cod_contabil,tipo)
+        st.rerun()
+
+with col2:
+    st.subheader("Lançamentos")
+    lancto=get_lancto(empresa)
+    lancto_df = pd.DataFrame(
+        lancto,
+        columns=["Id","Data", "Valor", "Histórico", "Complemento", "Conta", "Tipo"],
+    )
+    if not lancto_df.empty:
+        lancto_df["Data"] = pd.to_datetime(lancto_df["Data"],format="%d/%m/%Y")
+        lancto_df = lancto_df.sort_values("Data", kind="mergesort")
+
+        saldo_movimento = lancto_df["Valor"].where(
+            lancto_df["Tipo"].str.lower() == "entrada",
+            -lancto_df["Valor"],
+        )
+        lancto_df["Saldo"] = saldo_movimento.cumsum()
+        lancto_df = lancto_df.sort_values("Data") 
+    display_df = lancto_df.drop(columns=["Id"])
+    display_df["Data"] = display_df["Data"].dt.strftime("%d/%m/%Y")
+    display_df["Valor"] = display_df["Valor"].apply(formata_valor)
+    display_df["Saldo"] = display_df["Saldo"].apply(formata_valor)    
+    st.dataframe(display_df)
+
+    selecionados = st.multiselect(
+        "Selecione os lançamentos para excluir",
+        options=lancto_df["Id"],
+        format_func=lambda row_id: (
+            f"{lancto_df.loc[lancto_df['Id'] == row_id, 'Data'].iloc[0]:%d/%m/%Y} "
+            f"- {lancto_df.loc[lancto_df['Id'] == row_id, 'Histórico'].iloc[0]} "
+            f"- {lancto_df.loc[lancto_df['Id'] == row_id, 'Valor'].iloc[0]:.2f}"
+        ),
+    )
+    if st.button("Excluir selecionados") and selecionados:
+        delete_lancto(selecionados)
+        st.success("Lançamentos removidos.")
+        st.rerun()

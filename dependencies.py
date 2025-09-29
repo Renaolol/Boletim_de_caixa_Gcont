@@ -1,6 +1,8 @@
 import psycopg2
 import streamlit as st
 from contextlib import contextmanager
+from decimal import Decimal, InvalidOperation
+import pandas as pd
 
 # db = st.secrets["db"]
 
@@ -93,7 +95,7 @@ def get_historicos(empresa):
     conn = conecta_banco()
     cursor = conn.cursor()
     query="""
-        SELECT cliente, descricao, cod_conta
+        SELECT descricao
         FROM historicos
         WHERE cliente = %s
     """
@@ -130,3 +132,56 @@ def get_contas(empresa):
     conn.close()
     return contas
 
+def create_lancto(empresa,data,valor,historico,complemento,conta,tipo):
+    conn = conecta_banco()
+    cursor=conn.cursor()
+    query="""
+    INSERT INTO movimentacoes(empresa,data_mov,valor,historico,complemento,conta,tipo)
+    VALUES (%s,%s,%s,%s,%s,%s,%s)
+    """
+    cursor.execute(query, (empresa,data,valor,historico,complemento,conta,tipo))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return
+
+def get_lancto(empresa):
+    conn=conecta_banco()
+    cursor=conn.cursor()
+    query="""
+        SELECT id, data_mov, valor, historico, complemento, conta, tipo
+        FROM movimentacoes
+        WHERE empresa = %s
+        ORDER BY data_mov
+    """  
+    cursor.execute(query, (empresa, ))
+    lancto = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return lancto
+
+def delete_lancto(ids):
+    conn = conecta_banco()
+    cursor = conn.cursor()
+    query = "DELETE FROM movimentacoes WHERE id = ANY(%s)"
+    cursor.execute(query, (list(ids),))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+def formata_valor(valor):
+    if valor is None or (hasattr(valor, "__float__") and pd.isna(valor)):
+        return "R$ 0,00"
+
+    try:
+        quantia = Decimal(str(valor))
+    except (InvalidOperation, ValueError, TypeError):
+        return "R$ 0,00"
+
+    sinal = "-" if quantia < 0 else ""
+    quantia = abs(quantia)
+
+    bruto = f"{quantia:,.2f}"
+    bruto = bruto.replace(",", "_").replace(".", ",").replace("_", ".")
+
+    return f"{sinal}R$ {bruto}"
