@@ -185,3 +185,20 @@ def formata_valor(valor):
     bruto = bruto.replace(",", "_").replace(".", ",").replace("_", ".")
 
     return f"{sinal}R$ {bruto}"
+def update_lancto(lancto_id, data, valor, historico, complemento, conta, tipo):
+    conn = conecta_banco()
+    cursor = conn.cursor()
+    query = """
+        UPDATE movimentacoes
+        SET data_mov = %s,
+            valor = %s,
+            historico = %s,
+            complemento = %s,
+            conta = %s,
+            tipo = %s
+        WHERE id = %s
+    """
+    cursor.execute(query, (data, valor, historico, complemento, conta, tipo, lancto_id))
+    conn.commit()
+    cursor.close()
+    conn.close()

@@ -2,7 +2,7 @@ import streamlit as st
 from config_pag import get_logo, set_background
 import pandas as pd
 import psycopg2 as pg
-from dependencies import get_clientes,get_contas,get_historicos,create_lancto,get_lancto, delete_lancto, formata_valor
+from dependencies import get_clientes,get_contas,get_historicos,create_lancto,get_lancto, delete_lancto, formata_valor,update_lancto
 
 st.set_page_config(layout='wide', initial_sidebar_state='collapsed')
 
@@ -55,8 +55,41 @@ with col2:
     display_df["Data"] = display_df["Data"].dt.strftime("%d/%m/%Y")
     display_df["Valor"] = display_df["Valor"].apply(formata_valor)
     display_df["Saldo"] = display_df["Saldo"].apply(formata_valor)    
-    st.dataframe(display_df)
+    editor_df = lancto_df.copy()
+    editor_df["Data"] = editor_df["Data"].dt.date          # aceita DateColumn
+    edited_df = st.data_editor(
+    editor_df[["Id", "Data", "Valor", "Histórico", "Complemento", "Conta", "Tipo", "Saldo"]],
+    hide_index=True,
+    column_config={
+        "Data": st.column_config.DateColumn("Data"),
+        "Valor": st.column_config.NumberColumn("Valor", format="%.2f"),
+        "Saldo": st.column_config.NumberColumn("Saldo", disabled=True),
+        "Id": st.column_config.TextColumn("Id", disabled=True),
+    },
+    key="lancto_editor",
+)
+    if st.button("Salvar alterações"):
+        base = lancto_df.set_index("Id")
+        edits = edited_df.set_index("Id")
+        mudou = edits.compare(base, keep_shape=False)
+        ids_alterados = mudou.index.unique()
 
+        for lancto_id in ids_alterados:
+            registro = edits.loc[lancto_id]
+            update_lancto(
+                int(lancto_id),                       # ← força int nativo
+                registro["Data"],                     # já virou date no editor
+                float(registro["Valor"]),             # float Python
+                registro["Histórico"],
+                registro["Complemento"],
+                str(registro["Conta"]),               # ou int(...) se for numérico
+                registro["Tipo"],
+            )
+        if len(ids_alterados) > 0:
+            st.success("Atualizações salvas.")
+            st.rerun()
+        else:
+            st.info("Nenhuma alteração detectada.")
     selecionados = st.multiselect(
         "Selecione os lançamentos para excluir",
         options=lancto_df["Id"],
