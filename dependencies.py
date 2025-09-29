@@ -3,6 +3,8 @@ import streamlit as st
 from contextlib import contextmanager
 from decimal import Decimal, InvalidOperation
 import pandas as pd
+from datetime import date, datetime
+from pathlib import Path
 
 # db = st.secrets["db"]
 
@@ -202,3 +204,52 @@ def update_lancto(lancto_id, data, valor, historico, complemento, conta, tipo):
     conn.commit()
     cursor.close()
     conn.close()
+
+def get_dominio(empresa):
+    conn = conecta_banco()
+    cursor = conn.cursor()
+    query = """
+        SELECT data_mov, conta, valor, historico, complemento, tipo
+        FROM movimentacoes
+        WHERE empresa = %s
+        ORDER BY data_mov
+    """
+    cursor.execute(query, (empresa,))
+    dominio = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    if not dominio:
+        return ""
+
+    dominio_df = pd.DataFrame(
+        dominio,
+        columns=["Data", "Conta", "Valor", "Historico", "Complemento", "Tipo"],
+    )
+
+    linhas = []
+
+    for _, row in dominio_df.iterrows():
+        data_valor = row["Data"]
+        if isinstance(data_valor, (datetime, date)):
+            data_fmt = data_valor.strftime("%d/%m/%Y")
+        else:
+            data_fmt = str(data_valor)
+
+        descricao = " ".join(filter(None, [row["Historico"], row["Complemento"]])).strip()
+        valor_fmt = f"{float(row['Valor']):.2f}"
+
+        if str(row["Tipo"]).lower() == "entrada":
+            linha = (
+                "|6000|X||||\n"
+                f"|6100|{data_fmt}|5|{row['Conta']}|{valor_fmt}||{descricao}||||"
+            )
+        else:
+            linha = (
+                "|6000|X||||\n"
+                f"|6100|{data_fmt}|{row['Conta']}|5|{valor_fmt}||{descricao}||||"
+            )
+        linhas.append(linha)
+        
+    saida = "\n".join(linhas)
+    return saida

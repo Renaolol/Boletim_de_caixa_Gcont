@@ -2,7 +2,9 @@ import streamlit as st
 from config_pag import get_logo, set_background
 import pandas as pd
 import psycopg2 as pg
-from dependencies import get_clientes,get_contas,get_historicos,create_lancto,get_lancto, delete_lancto, formata_valor,update_lancto
+from datetime import date, datetime
+from pathlib import Path
+from dependencies import get_clientes,get_contas,get_historicos,create_lancto,get_lancto, delete_lancto, formata_valor,update_lancto,get_dominio
 
 st.set_page_config(layout='wide', initial_sidebar_state='collapsed')
 
@@ -10,17 +12,18 @@ get_logo()
 set_background()
 empresa = st.text_input("empresa",0,width=300)
 historico = get_historicos(empresa)
+historicos_df = pd.DataFrame(historico,columns=["Descricao"])
 conta = get_contas(empresa)
 conta_df = pd.DataFrame(conta,columns=["Empresa","Conta","Cod_contabil","Tipo"])
 contas_por_codigo = dict(zip(conta_df["Cod_contabil"], conta_df["Conta"]))
 st.title("Boletim de caixa online - GCONT")
 st.divider()
-col1,col2 = st.columns([1,3])
+col1,col2 = st.columns([1.5,3.5])
 with col1:
     st.subheader("Novo lançamento")
     data = st.date_input("Data",width=300,format="DD/MM/YYYY")
     valor=st.number_input("Valor",width=300)
-    historico=st.selectbox("Histórico",historico,width=300)
+    historico=st.selectbox("Histórico",historicos_df["Descricao"],width=300)
     complemento = st.text_area("Complemento",width=300)
     cod_contabil = st.selectbox(
         "Conta",
@@ -56,7 +59,8 @@ with col2:
     display_df["Valor"] = display_df["Valor"].apply(formata_valor)
     display_df["Saldo"] = display_df["Saldo"].apply(formata_valor)    
     editor_df = lancto_df.copy()
-    editor_df["Data"] = editor_df["Data"].dt.date          # aceita DateColumn
+    editor_df["Data"] = editor_df["Data"].dt.date 
+    editor_df["Saldo"] = editor_df["Saldo"].apply(formata_valor)          # aceita DateColumn
     edited_df = st.data_editor(
     editor_df[["Id", "Data", "Valor", "Histórico", "Complemento", "Conta", "Tipo", "Saldo"]],
     hide_index=True,
@@ -68,6 +72,7 @@ with col2:
     },
     key="lancto_editor",
 )
+    
     if st.button("Salvar alterações"):
         base = lancto_df.set_index("Id")
         edits = edited_df.set_index("Id")
@@ -103,3 +108,6 @@ with col2:
         delete_lancto(selecionados)
         st.success("Lançamentos removidos.")
         st.rerun()
+
+st.divider()        
+exportar = st.download_button("Exportar arquivo.txt",get_dominio(empresa),"Lancamentos_dominio.txt")
