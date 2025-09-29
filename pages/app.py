@@ -22,8 +22,8 @@ col1,col2 = st.columns([1.5,3.5])
 with col1:
     st.subheader("Novo lançamento")
     data = st.date_input("Data",width=300,format="DD/MM/YYYY")
-    valor=st.number_input("Valor",width=300)
-    historico=st.selectbox("Histórico",historicos_df["Descricao"],width=300)
+    valor = st.number_input("Valor",width=300)
+    historico = st.selectbox("Histórico",historicos_df["Descricao"],width=300)
     complemento = st.text_area("Complemento",width=300)
     cod_contabil = st.selectbox(
         "Conta",
@@ -34,8 +34,13 @@ with col1:
     tipo = st.radio("Tipo",["Entrada","Saída"],horizontal=True)
     slv_lancto = st.button("Salvar Lançamento")
     if slv_lancto:
-        create_lancto(empresa,data,valor,historico,complemento,cod_contabil,tipo)
-        st.rerun()
+        if valor <=0:
+            st.warning("Informe um valor")
+        elif complemento =="":
+            st.warning("Informe um Complemento de Histórico")
+        else:    
+            create_lancto(empresa,data,valor,historico,complemento,cod_contabil,tipo)
+            st.rerun()
 
 with col2:
     st.subheader("Lançamentos")
@@ -73,7 +78,7 @@ with col2:
     key="lancto_editor",
 )
     
-    if st.button("Salvar alterações"):
+    if st.button("Salvar alterações"):    
         base = lancto_df.set_index("Id")
         edits = edited_df.set_index("Id")
         mudou = edits.compare(base, keep_shape=False)
@@ -101,6 +106,7 @@ with col2:
         format_func=lambda row_id: (
             f"{lancto_df.loc[lancto_df['Id'] == row_id, 'Data'].iloc[0]:%d/%m/%Y} "
             f"- {lancto_df.loc[lancto_df['Id'] == row_id, 'Histórico'].iloc[0]} "
+            f"- {lancto_df.loc[lancto_df['Id'] == row_id, 'Complemento'].iloc[0]}"
             f"- {lancto_df.loc[lancto_df['Id'] == row_id, 'Valor'].iloc[0]:.2f}"
         ),
     )

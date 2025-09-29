@@ -1,7 +1,7 @@
 import streamlit as st
 from time import sleep
 from config_pag import set_background, get_logo
-from dependencies import cadastra_clientes, conecta_banco ,get_clientes, get_historicos, cadastra_historico,create_conta,get_contas
+from dependencies import cadastra_clientes ,get_clientes, get_historicos, cadastra_historico,create_conta,get_contas
 get_logo()
 set_background()
 st.title("Página de Administração")
