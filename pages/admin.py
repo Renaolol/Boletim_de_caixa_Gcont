@@ -5,13 +5,14 @@ from dependencies import cadastra_clientes ,get_clientes, get_historicos, cadast
 get_logo()
 set_background()
 st.title("Página de Administração")
-col_cadastro, col_clientes = st.columns(2)
+col_cadastro, col_clientes = st.columns([1,2])
 with col_cadastro:
     nome= st.text_input("Insira o nome do cliente a ser cadastrado: ",width=300)
-    cod = st.number_input("Insira o código do cliente disponível na domínio: ",width=300)
+    cod = st.number_input("Insira o código do cliente disponível na domínio: ",width=300,step=0)
+    cnpj = st.number_input("Insira o CNPJ do cliente (Somente números)",width=300, step=0)
     salvar = st.button("Salvar Cliente")    
     if salvar:
-        cadastra_clientes(nome,cod)
+        cadastra_clientes(nome,cod,cnpj)
         st.success("Cliente salvo com sucesso!")
         sleep(1)
         st.rerun()

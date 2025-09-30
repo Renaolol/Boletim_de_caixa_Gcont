@@ -56,7 +56,7 @@ def get_clientes():
     conn= conecta_banco()
     cursor = conn.cursor()
     query="""
-    SELECT nome, codigo
+    SELECT nome, codigo, cnpj
     FROM clientes
     """
     cursor.execute(query, )
@@ -65,14 +65,14 @@ def get_clientes():
     conn.close()
     return clientes
 
-def cadastra_clientes (nome,codigo):
+def cadastra_clientes (nome,codigo,cnpj):
     conn = conecta_banco()
     cursor = conn.cursor()
     query="""
-    INSERT INTO clientes(nome,codigo)
-    VALUES(%s,%s)
+    INSERT INTO clientes(nome,codigo,cnpj)
+    VALUES(%s,%s,%s)
 """
-    cursor.execute(query, (nome,codigo))
+    cursor.execute(query, (nome,codigo,cnpj))
     conn.commit()
     cursor.close()
     conn.close()
