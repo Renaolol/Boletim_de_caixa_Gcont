@@ -1,10 +1,10 @@
 import streamlit as st
 import streamlit_authenticator as stauth
-from dependencies import consulta_geral, cria_tabela, obter_empresa_codigo
+from dependencies import consulta_geral, obter_empresa_codigo
 from time import sleep
-from config_pag import set_background, get_logo, get_ico
+from config_pag import set_background, get_logo
 
-st.set_page_config(layout="wide", page_icon=get_ico())
+st.set_page_config(layout="wide")
 
 get_logo()
 set_background()
@@ -14,25 +14,28 @@ def main():
     try:
         consulta_geral()
     except:
-        cria_tabela()    
+        st.warning("ERRO")  
 
     db_query = consulta_geral()
 
-    registros = {'usernames':{}}
-    for data in db_query:
-       registros['usernames'][data[1]] = {'name':data[0], "password":data[2]}
+    registros = {"usernames": {}}
+    for nome, _, username, senha in db_query:
+        registros["usernames"][username] = {"name": nome, "password": senha}
+
     authenticator = stauth.Authenticate(
         registros,
-        'random_cookie_name',
-        'randon_signature_key',
-
+        "random_cookie_name",
+        "randon_signature_key",
         COOKIE_EXPIRY_DAYS,
     )
-    if 'clicou_registrar' not in st.session_state:
-        st.session_state['clicou_registrar']=False
 
-    if st.session_state['clicou_registrar'] == False:
-        login_form(authenticator)   
+    if "clicou_registrar" not in st.session_state:
+        st.session_state["clicou_registrar"] = False
+
+    if not st.session_state["clicou_registrar"]:
+        login_form(authenticator)
+                
+
 
 def login_form(authenticator):
     # Renderiza o formulário de login

@@ -1,9 +1,11 @@
 import streamlit as st
 from time import sleep
 from config_pag import set_background, get_logo
+from auth_guard import require_login
 from dependencies import cadastra_clientes ,get_clientes, get_historicos, cadastra_historico,create_conta,get_contas
 get_logo()
 set_background()
+require_login()
 st.title("Página de Administração")
 col_cadastro, col_clientes = st.columns([1,2])
 with col_cadastro:

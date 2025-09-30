@@ -170,7 +170,6 @@ def delete_lancto(ids):
     conn.commit()
     cursor.close()
     conn.close()
-
 def formata_valor(valor):
     if valor is None or (hasattr(valor, "__float__") and pd.isna(valor)):
         return "R$ 0,00"
@@ -204,8 +203,8 @@ def update_lancto(lancto_id, data, valor, historico, complemento, conta, tipo):
     conn.commit()
     cursor.close()
     conn.close()
-
 def get_dominio(empresa):
+
     conn = conecta_banco()
     cursor = conn.cursor()
     query = """
@@ -253,3 +252,28 @@ def get_dominio(empresa):
         
     saida = "\n".join(linhas)
     return saida
+def consulta_geral():
+    conn = conecta_banco()
+    cursor = conn.cursor()
+    query=("""
+            SELECT nome, codigo, username,senha
+            FROM clientes
+            ORDER BY nome
+        """)
+    cursor.execute(query, )
+    return cursor.fetchall()
+
+def obter_empresa_codigo(user:str):
+    conn = conecta_banco()
+    cursor = conn.cursor()
+    query=("""
+            SELECT codigo
+            FROM clientes 
+            WHERE username = %s"""
+)
+    cursor.execute(query, (user,))
+    row = cursor.fetchone()
+    cursor.close()
+    conn.close()
+
+    return row[0] if row and row[0] else None
