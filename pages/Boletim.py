@@ -5,14 +5,20 @@ import psycopg2 as pg
 from datetime import date, datetime
 from pathlib import Path
 from auth_guard import require_login
-from dependencies import get_clientes,get_contas,get_historicos,create_lancto,get_lancto, delete_lancto, formata_valor,update_lancto,get_dominio
+from dependencies import obter_empresa_codigo,get_clientes,get_contas,get_historicos,create_lancto,get_lancto, delete_lancto, formata_valor,update_lancto,get_dominio
 
 st.set_page_config(layout='wide', initial_sidebar_state='collapsed')
 
 get_logo()
 set_background()
 require_login()
-empresa = st.text_input("empresa",0,width=300)
+username = (st.session_state.get("username") or "").lower()
+user = (st.session_state.get('username'))
+if username=="admin":
+    empresa = st.text_input("empresa",0,width=300)
+else:
+    empresa = obter_empresa_codigo(user)
+
 historico = get_historicos(empresa)
 historicos_df = pd.DataFrame(historico,columns=["Descricao"])
 conta = get_contas(empresa)

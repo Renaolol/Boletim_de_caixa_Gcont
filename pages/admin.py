@@ -20,7 +20,7 @@ if username=="admin":
         senha = st.text_input("Insira a Senha do usuário: ",width=300)
         salvar = st.button("Salvar Cliente")    
         if salvar:
-            cadastra_clientes(nome,cod,cnpj,user,senha)
+            cadastra_clientes(nome,cod,cnpj,(user.lower()),senha)
             st.success("Cliente salvo com sucesso!")
             sleep(1)
             st.rerun()

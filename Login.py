@@ -45,7 +45,6 @@ def login_form(authenticator):
     authentication_status = st.session_state.get('authentication_status')
     name = st.session_state.get('name')
     username = st.session_state.get('username')
-    
 
     if authentication_status:
         # carrega e guarda o código da empresa do usuário logado
