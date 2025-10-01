@@ -203,17 +203,18 @@ def update_lancto(lancto_id, data, valor, historico, complemento, conta, tipo):
     conn.commit()
     cursor.close()
     conn.close()
-def get_dominio(empresa):
+def get_dominio(empresa, data_inicial, data_final):
 
     conn = conecta_banco()
     cursor = conn.cursor()
     query = """
         SELECT data_mov, conta, valor, historico, complemento, tipo
         FROM movimentacoes
-        WHERE empresa = %s
+        WHERE empresa = %s 
+        AND data_mov BETWEEN %s AND %s
         ORDER BY data_mov
     """
-    cursor.execute(query, (empresa,))
+    cursor.execute(query, (empresa, data_inicial, data_final, ))
     dominio = cursor.fetchall()
     cursor.close()
     conn.close()

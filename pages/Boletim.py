@@ -24,7 +24,7 @@ historicos_df = pd.DataFrame(historico,columns=["Descricao"])
 conta = get_contas(empresa)
 conta_df = pd.DataFrame(conta,columns=["Empresa","Conta","Cod_contabil","Tipo"])
 contas_por_codigo = dict(zip(conta_df["Cod_contabil"], conta_df["Conta"]))
-st.title("Boletim de caixa online - GCONT")
+st.title(f"Boletim de caixa online - GCONT - {st.session_state.get("name")}")
 st.divider()
 col1,col2 = st.columns([1.5,3.5])
 with col1:
@@ -52,11 +52,17 @@ with col1:
 
 with col2:
     st.subheader("Lançamentos")
+    coldata, coldata2, colespacamento = st.columns([1,1,5])
+    with coldata:
+        data_inicial = st.date_input("Data inicial",width=150,format="DD/MM/YYYY")
+    with coldata2:
+        data_final = st.date_input("Data final",width=150,format="DD/MM/YYYY")  
     lancto=get_lancto(empresa)
     lancto_df = pd.DataFrame(
         lancto,
         columns=["Id","Data", "Valor", "Histórico", "Complemento", "Conta", "Tipo"],
     )
+
     if not lancto_df.empty:
         lancto_df["Data"] = pd.to_datetime(lancto_df["Data"],format="%d/%m/%Y")
         lancto_df = lancto_df.sort_values("Data", kind="mergesort")
@@ -67,6 +73,16 @@ with col2:
         )
         lancto_df["Saldo"] = saldo_movimento.cumsum()
         lancto_df = lancto_df.sort_values("Data") 
+        if not lancto_df.empty:
+            lancto_df["Data"] = pd.to_datetime(lancto_df["Data"], format="%d/%m/%Y")
+
+            inicio = pd.Timestamp(data_inicial)
+            fim = pd.Timestamp(data_final)
+            if inicio > fim:
+                st.warning("A data inicial não pode ser maior que a data final.")
+                lancto_df = lancto_df.iloc[0:0]
+            else:
+                lancto_df = lancto_df.loc[lancto_df["Data"].between(inicio, fim)]
     display_df = lancto_df.drop(columns=["Id"])
     display_df["Data"] = display_df["Data"].dt.strftime("%d/%m/%Y")
     display_df["Valor"] = display_df["Valor"].apply(formata_valor)
@@ -110,7 +126,7 @@ with col2:
             st.info("Nenhuma alteração detectada.")
     selecionados = st.multiselect(
         "Selecione os lançamentos para excluir",
-        options=lancto_df["Id"],
+        options=lancto_df["Id"], 
         format_func=lambda row_id: (
             f"{lancto_df.loc[lancto_df['Id'] == row_id, 'Data'].iloc[0]:%d/%m/%Y} "
             f"- {lancto_df.loc[lancto_df['Id'] == row_id, 'Histórico'].iloc[0]} "
@@ -124,4 +140,4 @@ with col2:
         st.rerun()
 
 st.divider()        
-exportar = st.download_button("Exportar arquivo.txt",get_dominio(empresa),"Lancamentos_dominio.txt")
+exportar = st.download_button("Exportar arquivo.txt",get_dominio(empresa,data_inicial,data_final),"Lancamentos_dominio.txt")
