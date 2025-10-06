@@ -20,7 +20,11 @@ def main():
 
     registros = {"usernames": {}}
     for nome, _, username, senha in db_query:
-        registros["usernames"][username] = {"name": nome, "password": senha}
+        registros["usernames"][username] = {
+            "name": nome,
+            "password": senha,
+            "email": f"{username}@example.local",
+        }
 
     authenticator = stauth.Authenticate(
         registros,
