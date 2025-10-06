@@ -43,58 +43,15 @@ from pathlib import Path
 #             ORDER BY nome
 #         """)
 #         return cursor.fetchall()
-def _load_db_config():
-    """Load database connection settings from env vars or Streamlit secrets."""
-    def _int_or_default(value, default):
-        try:
-            return int(value)
-        except (TypeError, ValueError):
-            return default
+config = {
+    "host": "10.66.66.1",
+    "dbname": "boletimcaixa",
+    "user": "postgres",
+    "password": "0176",
+    "port":"5432",
+}
 
-    config = {
-        "host": os.getenv("DB_HOST", "localhost"),
-        "dbname": os.getenv("DB_NAME", "boletimcaixa"),
-        "user": os.getenv("DB_USER", "postgres"),
-        "password": os.getenv("DB_PASSWORD", "0176"),
-        "port": _int_or_default(os.getenv("DB_PORT", 5432), 5432),
-    }
-
-    sslmode_env = os.getenv("DB_SSLMODE")
-    if sslmode_env:
-        config["sslmode"] = sslmode_env
-
-    secrets_db = None
-    secrets_obj = getattr(st, "secrets", None)
-    if secrets_obj:
-        try:
-            secrets_db = secrets_obj["db"]
-        except Exception:
-            try:
-                secrets_db = secrets_obj.get("db")  # type: ignore[attr-defined]
-            except Exception:
-                secrets_db = None
-
-    if secrets_db:
-        config.update(
-            {
-                "host": secrets_db.get("host", config["host"]),
-                "dbname": secrets_db.get("database", secrets_db.get("dbname", config["dbname"])),
-                "user": secrets_db.get("user", config["user"]),
-                "password": secrets_db.get("password", config["password"]),
-                "port": _int_or_default(
-                    secrets_db.get("port", config["port"]),
-                    config["port"],
-                ),
-            }
-        )
-        sslmode_secret = secrets_db.get("sslmode")
-        if sslmode_secret:
-            config["sslmode"] = sslmode_secret
-
-    return config
-
-
-db_config = _load_db_config()
+db_config = config
 def conecta_banco():
     return psycopg2.connect(**db_config)
 
