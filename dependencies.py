@@ -44,7 +44,7 @@ from pathlib import Path
 #         """)
 #         return cursor.fetchall()
 config = {
-    "host": "10.66.66.1",
+    "host": "10.66.66.2",
     "dbname": "boletimcaixa",
     "user": "postgres",
     "password": "0176",
