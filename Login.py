@@ -52,7 +52,7 @@ def login_form(authenticator):
         st.session_state['empresa_codigo'] = emp
         authenticator.logout(location='main', key='Logout')
         st.title("Login efetuado com sucesso!")
-        st.caption(f"Logado como: {name or '—'}, {emp or "Administrador"}")
+        st.caption(f"Logado como: {name or '—'}")
     elif authentication_status is False:
         st.error('Usuario/Senha incorretos')
     else:
