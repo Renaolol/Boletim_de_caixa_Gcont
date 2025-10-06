@@ -24,7 +24,7 @@ historicos_df = pd.DataFrame(historico,columns=["Descricao"])
 conta = get_contas(empresa)
 conta_df = pd.DataFrame(conta,columns=["Empresa","Conta","Cod_contabil","Tipo"])
 contas_por_codigo = dict(zip(conta_df["Cod_contabil"], conta_df["Conta"]))
-st.title(f"Boletim de caixa online - GCONT - {st.session_state.get("name")}")
+st.title(f"Boletim de caixa online - GCONT - {st.session_state.get('name')}")
 st.divider()
 col1,col2 = st.columns([1.5,3.5])
 with col1:
