@@ -64,8 +64,8 @@ if username=="admin":
         edited_df = st.data_editor(contas_contabeis[["id","Empresa","Nome Conta","Código Contábil","Tipo"]],hide_index=True,column_config={})
         atualizar_conta = st.button("Atualizar conta")
         if atualizar_conta: 
-            base = contas_contabeis.set_index("Id")
-            edits = edited_df.set_index("Id")
+            base = contas_contabeis.set_index("id")
+            edits = edited_df.set_index("id")
             change = edits.compare(base, keep_shape=False) 
             ids_alterados = change.index.unique()
 
