@@ -3,6 +3,7 @@ from time import sleep
 from config_pag import set_background, get_logo
 from auth_guard import require_login
 from dependencies import cadastra_clientes ,get_clientes, get_historicos, cadastra_historico,create_conta,get_contas
+import pandas as pd
 get_logo()
 set_background()
 require_login()
@@ -58,7 +59,8 @@ if username=="admin":
             sleep(1)
             st.rerun()          
     with col4:
-        contas_contabeis=get_contas(empresa)
+        contas_contabeis_list=get_contas(empresa)
+        contas_contabeis = pd.Dataframe(contas_contabeis_list)
         edited_df = st.data_editor(contas_contabeis[["id","Empresa","Nome Conta","Código Contábil","Tipo"]],hide_index=True,column_config={})
         atualizar_conta = st.button("Atualizar conta")
         if atualizar_conta: 
