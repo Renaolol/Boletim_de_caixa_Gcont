@@ -2,7 +2,7 @@ import streamlit as st
 from time import sleep
 from config_pag import set_background, get_logo
 from auth_guard import require_login
-from dependencies import cadastra_clientes ,get_clientes, get_historicos, cadastra_historico,create_conta,get_contas
+from dependencies import cadastra_clientes ,get_clientes, get_historicos, cadastra_historico,create_conta,get_contas, update_conta
 import pandas as pd
 get_logo()
 set_background()
@@ -64,7 +64,26 @@ if username=="admin":
         edited_df = st.data_editor(contas_contabeis[["id","Empresa","Nome Conta","Código Contábil","Tipo"]],hide_index=True,column_config={})
         atualizar_conta = st.button("Atualizar conta")
         if atualizar_conta: 
-            pass
+            base = contas_contabeis.set_index("Id")
+            edits = edited_df.set_index("Id")
+            change = edits.compare(base, keep_shape=False) 
+            ids_alterados = change.index.unique()
+
+            for lancto_id in ids_alterados:
+                registro = edits.loc[lancto_id]
+                update_conta(
+                    lancto_id,
+                    registro["id"],
+                    registro["Empresa"],
+                    registro["Nome Conta"],
+                    registro["Código Contábil"],
+                    registro["Tipo"]
+                )
+            if len(ids_alterados) > 0:
+                st.sucess("Atualização Salva")
+                st.rerun()
+            else:
+                st.info("Nenhuma alteração detectada.")        
     st.divider()
 else:
     st.warning("Acesso restrito para administradores")        
