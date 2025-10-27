@@ -60,7 +60,7 @@ if username=="admin":
             st.rerun()          
     with col4:
         contas_contabeis_list=get_contas(empresa)
-        contas_contabeis = pd.DataFrame(contas_contabeis_list)
+        contas_contabeis = pd.DataFrame(contas_contabeis_list,columns=["id","Empresa","Nome Conta","Código Contábil","Tipo"])
         edited_df = st.data_editor(contas_contabeis[["id","Empresa","Nome Conta","Código Contábil","Tipo"]],hide_index=True,column_config={})
         atualizar_conta = st.button("Atualizar conta")
         if atualizar_conta: 
