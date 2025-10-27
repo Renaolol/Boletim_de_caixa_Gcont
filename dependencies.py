@@ -218,7 +218,7 @@ def update_conta(id_conta,empresa, nome_conta, cod_contabil, tipo):
                 tipo = %s
             WHERE id= %s    
             """
-    cursor.execute(query, (id_conta, empresa, nome_conta, cod_contabil, tipo, id_conta))
+    cursor.execute(query, (empresa, nome_conta, cod_contabil, tipo, id_conta))
     conn.commit()
     cursor.close()
     conn.close()
