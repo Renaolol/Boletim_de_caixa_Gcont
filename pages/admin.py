@@ -10,7 +10,7 @@ require_login()
 username = (st.session_state.get("username") or "").lower()
 
 if username=="admin":
-    st.title("Página de Administração")
+    st.title("Página de Administração",help="Disclaimer: BANCO DE DADOS CONECTADO É O FÍSICO.")
     col_cadastro, col_clientes = st.columns([1,2])
     with col_cadastro:
         nome= st.text_input("Insira o nome do cliente a ser cadastrado: ",width=300)
@@ -24,7 +24,7 @@ if username=="admin":
             st.success("Cliente salvo com sucesso!")
             sleep(1)
             st.rerun()
-
+        st.divider()
         empresa = st.text_input("Informe o código do cliente",1,width=300)
     with col_clientes:
         clientes=get_clientes()
@@ -36,7 +36,7 @@ if username=="admin":
         st.dataframe(historicos)
     with col2:
         desc_historico = st.text_area("Informe a descrição do histórico: ")
-        cod_conta = st.text_input("Informe o código contabil da conta")
+        cod_conta = None
 
         slv_hist = st.button("Salvar Histórico")
         if slv_hist:
@@ -56,11 +56,13 @@ if username=="admin":
             create_conta(empresa, nome_conta, cod_contabil, tipo)
             st.success("Conta criada com sucesso!")
             sleep(1)
-            st.rerun()
+            st.rerun()          
     with col4:
         contas_contabeis=get_contas(empresa)
-        st.dataframe(contas_contabeis)
-
+        edited_df = st.data_editor(contas_contabeis[["id","Empresa","Nome Conta","Código Contábil","Tipo"]],hide_index=True,column_config={})
+        atualizar_conta = st.button("Atualizar conta")
+        if atualizar_conta: 
+            pass
     st.divider()
 else:
     st.warning("Acesso restrito para administradores")        

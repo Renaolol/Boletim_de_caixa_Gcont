@@ -127,7 +127,7 @@ def get_contas(empresa):
     conn=conecta_banco()
     cursor=conn.cursor()
     query="""
-    SELECT empresa, conta,cod_contabil,tipo
+    SELECT id, empresa, conta,cod_contabil,tipo
     FROM contas
     WHERE empresa = %s
     """  
@@ -206,6 +206,23 @@ def update_lancto(lancto_id, data, valor, historico, complemento, conta, tipo):
     conn.commit()
     cursor.close()
     conn.close()
+
+def update_conta(id_conta,empresa, nome_conta, cod_contabil, tipo):
+    conn = conecta_banco()
+    cursor = conn.cursor()
+    query = """
+            UPDATE contas
+            SET empresa = %s,
+                nome_conta = %s,
+                cod_contabil = %s,
+                tipo = %s
+            WHERE id= %s    
+            """
+    cursor.execute(query, (empresa, nome_conta, cod_contabil, tipo, id_conta))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
 def get_dominio(empresa, data_inicial, data_final):
 
     conn = conecta_banco()
