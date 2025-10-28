@@ -207,7 +207,7 @@ def update_lancto(lancto_id, data, valor, historico, complemento, conta, tipo):
     cursor.close()
     conn.close()
 
-def update_conta(id_conta:int,empresa, nome_conta, cod_contabil:int, tipo):
+def update_conta(id_conta:int,empresa:int, nome_conta, cod_contabil:int, tipo):
     conn = conecta_banco()
     cursor = conn.cursor()
     query = """

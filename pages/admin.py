@@ -73,7 +73,7 @@ if username=="admin":
                 registro = edits.loc[lancto_id]
                 update_conta(
                     int(lancto_id),
-                    registro["Empresa"],
+                    int(registro["Empresa"]),
                     registro["Nome Conta"],
                     int(registro["Código Contábil"]),
                     registro["Tipo"]
