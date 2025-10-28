@@ -5,7 +5,6 @@ from time import sleep
 from config_pag import set_background, get_logo
 
 st.set_page_config(layout="wide")
-st.set_option(theme="light")
 
 get_logo()
 set_background()
