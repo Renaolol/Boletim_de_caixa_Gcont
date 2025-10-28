@@ -213,7 +213,7 @@ def update_conta(id_conta:int,empresa:int, nome_conta, cod_contabil:int, tipo):
     query = """
             UPDATE contas
             SET empresa = %s,
-                nome_conta = %s,
+                conta = %s,
                 cod_contabil = %s,
                 tipo = %s
             WHERE id= %s    
