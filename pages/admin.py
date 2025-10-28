@@ -79,7 +79,7 @@ if username=="admin":
                     registro["Tipo"]
                 )
             if len(ids_alterados) > 0:
-                st.sucess("Atualização Salva")
+                st.success("Atualização Salva")
                 st.rerun()
             else:
                 st.info("Nenhuma alteração detectada.")        
