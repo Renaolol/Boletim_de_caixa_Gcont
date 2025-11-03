@@ -7,42 +7,6 @@ import pandas as pd
 from datetime import date, datetime
 from pathlib import Path
 
-# db = st.secrets["db"]
-
-# DATABASE = db["database"]
-# HOST = db["host"]
-# USER = db["user"]
-# PASSWORD = db["password"]
-# PORT = db.get("port", 5432)
-# SSLMODE = db.get("sslmode", "require")
-
-# @contextmanager
-# def instance_cursor():
-#     connection = psycopg2.connect(
-#         database=DATABASE,
-#         host=HOST,
-#         user=USER,
-#         password=PASSWORD,
-#         port=PORT,
-#         sslmode=SSLMODE,
-#         connect_timeout=10,
-#     )
-#     cursor = connection.cursor()
-#     try:
-#         yield cursor
-#         connection.commit()
-#     finally:
-#         cursor.close()
-#         connection.close()
-
-# def consulta_associacoes():
-#     with instance_cursor() as cursor:
-#         cursor.execute("""
-#             SELECT nome, usuario, senha, cod_empresa
-#             FROM Associacoes
-#             ORDER BY nome
-#         """)
-#         return cursor.fetchall()
 config = {
     "host": "10.66.66.2",
     "dbname": "boletimcaixa",
@@ -52,10 +16,10 @@ config = {
 }
 
 db_config = config
-
+#Função para conectar no Banco de dados!! (BANCO DE DADOS FÍSICO)
 def conecta_banco():
     return psycopg2.connect(**db_config)
-
+#Função para pegar os clientes
 def get_clientes():
     conn= conecta_banco()
     cursor = conn.cursor()
@@ -68,7 +32,7 @@ def get_clientes():
     cursor.close()
     conn.close()
     return clientes
-
+#Função para Cadastrar Clientes
 def cadastra_clientes (nome,codigo,cnpj,username,senha):
     conn = conecta_banco()
     cursor = conn.cursor()
@@ -82,7 +46,7 @@ def cadastra_clientes (nome,codigo,cnpj,username,senha):
     conn.close()
 
     return("Cliente cadastrado")
-
+#Função para Criar históricos
 def cadastra_historico (cliente,descricao,cod_conta):
     conn=conecta_banco()
     cursor = conn.cursor()
@@ -95,7 +59,7 @@ def cadastra_historico (cliente,descricao,cod_conta):
     cursor.close()
     conn.close()
     return
-
+#Função para buscar os históricos
 def get_historicos(empresa):
     conn = conecta_banco()
     cursor = conn.cursor()
@@ -109,7 +73,7 @@ def get_historicos(empresa):
     cursor.close()
     conn.close()
     return historicos  
-
+#Função para criação de contas
 def create_conta(empresa, conta, cod_contabil, tipo):
     conn = conecta_banco()
     cursor = conn.cursor()
@@ -122,7 +86,7 @@ def create_conta(empresa, conta, cod_contabil, tipo):
     cursor.close()
     conn.close()
     return
-
+#Função para pegar as contas
 def get_contas(empresa):
     conn=conecta_banco()
     cursor=conn.cursor()
@@ -136,7 +100,7 @@ def get_contas(empresa):
     cursor.close()
     conn.close()
     return contas
-
+#Função para criar um lançamento novo
 def create_lancto(empresa,data,valor,historico,complemento,conta,tipo, portador):
     conn = conecta_banco()
     cursor=conn.cursor()
@@ -149,22 +113,23 @@ def create_lancto(empresa,data,valor,historico,complemento,conta,tipo, portador)
     cursor.close()
     conn.close()
     return
-
-def get_lancto(empresa):
+#Função para pegar os lançamentos
+#AQUI AINDA PRECISO DE ATENÇÃO, FAZER BUSCAR APENAS OS LANÇAMENTOS VINCULADOS AO PORTADOR SELECIONADO
+def get_lancto(empresa, portador):
     conn=conecta_banco()
     cursor=conn.cursor()
     query="""
-        SELECT id, data_mov, valor, historico, complemento, conta, tipo, Portador
+        SELECT id, data_mov, valor, historico, complemento, conta, tipo, portador
         FROM movimentacoes
-        WHERE empresa = %s
+        WHERE empresa = %s AND portador = %s
         ORDER BY data_mov
     """  
-    cursor.execute(query, (empresa, ))
+    cursor.execute(query, (empresa, portador, ))
     lancto = cursor.fetchall()
     cursor.close()
     conn.close()
     return lancto
-
+#Função para excluir os lançamentos
 def delete_lancto(ids):
     conn = conecta_banco()
     cursor = conn.cursor()
@@ -173,7 +138,7 @@ def delete_lancto(ids):
     conn.commit()
     cursor.close()
     conn.close()
-
+#Função para formatar os valores no padrão R$ 0,00
 def formata_valor(valor):
     if valor is None or (hasattr(valor, "__float__") and pd.isna(valor)):
         return "R$ 0,00"
@@ -190,7 +155,7 @@ def formata_valor(valor):
     bruto = bruto.replace(",", "_").replace(".", ",").replace("_", ".")
 
     return f"{sinal}R$ {bruto}"
-
+#Função para atualizar uma lançamento
 def update_lancto(lancto_id, data, valor, historico, complemento, conta, tipo):
     conn = conecta_banco()
     cursor = conn.cursor()
@@ -208,7 +173,7 @@ def update_lancto(lancto_id, data, valor, historico, complemento, conta, tipo):
     conn.commit()
     cursor.close()
     conn.close()
-
+#Função para atualizar as contas
 def update_conta(id_conta:int,empresa:int, nome_conta, cod_contabil:int, tipo):
     conn = conecta_banco()
     cursor = conn.cursor()
@@ -224,7 +189,7 @@ def update_conta(id_conta:int,empresa:int, nome_conta, cod_contabil:int, tipo):
     conn.commit()
     cursor.close()
     conn.close()
-
+#Função para criar o arquivo exportação da Domínio separador por |
 def get_dominio(empresa, data_inicial, data_final):
 
     conn = conecta_banco()
@@ -275,7 +240,7 @@ def get_dominio(empresa, data_inicial, data_final):
         
     saida = "\n".join(linhas)
     return saida
-
+#Função que faz uma consulta de clientes
 def consulta_geral():
     conn = conecta_banco()
     cursor = conn.cursor()
@@ -286,7 +251,7 @@ def consulta_geral():
         """)
     cursor.execute(query, )
     return cursor.fetchall()
-
+#Função para obter o código das empresas
 def obter_empresa_codigo(user:str):
     conn = conecta_banco()
     cursor = conn.cursor()
@@ -301,7 +266,7 @@ def obter_empresa_codigo(user:str):
     conn.close()
 
     return row[0] if row and row[0] else None
-
+#Função para criar portadores
 def create_portador(empresa, nome_conta,cod_contabil):
     conn = conecta_banco()
     cursor=conn.cursor()
@@ -314,7 +279,7 @@ def create_portador(empresa, nome_conta,cod_contabil):
     cursor.close()
     conn.close()
     return
-
+#Função para buscar os portadores
 def get_portador(empresa):
     conn=conecta_banco()
     cursor=conn.cursor()

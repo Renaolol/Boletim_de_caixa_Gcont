@@ -59,7 +59,7 @@ with col2:
         data_inicial = st.date_input("Data inicial",width=150,format="DD/MM/YYYY")
     with coldata2:
         data_final = st.date_input("Data final",width=150,format="DD/MM/YYYY")  
-    lancto=get_lancto(empresa)
+    lancto=get_lancto(empresa, portador_select)
     lancto_df = pd.DataFrame(
         lancto,
         columns=["Id","Data", "Valor", "Histórico", "Complemento", "Conta", "Tipo","Portador"],
