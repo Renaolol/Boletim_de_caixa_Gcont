@@ -2,14 +2,13 @@ import streamlit as st
 from time import sleep
 from config_pag import set_background, get_logo
 from auth_guard import require_login
-from dependencies import cadastra_clientes ,get_clientes, get_historicos, cadastra_historico,create_conta,get_contas, update_conta
+from dependencies import cadastra_clientes ,get_clientes, get_historicos, cadastra_historico,create_conta,get_contas, update_conta, get_portador, create_portador
 import pandas as pd
 get_logo()
 set_background()
 require_login()
 
 username = (st.session_state.get("username") or "").lower()
-
 if username=="admin":
     st.title("Página de Administração",help="Disclaimer: BANCO DE DADOS CONECTADO É O FÍSICO.")
     col_cadastro, col_clientes = st.columns([1,2])
@@ -84,5 +83,16 @@ if username=="admin":
             else:
                 st.info("Nenhuma alteração detectada.")        
     st.divider()
+    col5,col6 = st.columns(2)
+    with col5:
+        portador_nome = st.text_input("Insira o nome do Portador")
+        cod_portador = int(st.number_input("Insira o código Contabil"))
+        salva_portador = st.button("Salvar Portador")
+        if salva_portador:
+            create_portador(empresa,portador_nome,cod_portador)
+            st.rerun()
+    with col6:
+        portadores_list = get_portador(empresa)
+        portadores_df = pd.DataFrame(portadores_list)
 else:
     st.warning("Acesso restrito para administradores")        

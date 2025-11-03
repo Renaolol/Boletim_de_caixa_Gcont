@@ -5,7 +5,7 @@ import psycopg2 as pg
 from datetime import date, datetime
 from pathlib import Path
 from auth_guard import require_login
-from dependencies import obter_empresa_codigo,get_clientes,get_contas,get_historicos,create_lancto,get_lancto, delete_lancto, formata_valor,update_lancto,get_dominio
+from dependencies import obter_empresa_codigo,get_clientes,get_contas,get_historicos,create_lancto,get_lancto, delete_lancto, formata_valor,update_lancto,get_dominio,get_portador
 
 st.set_page_config(layout='wide', initial_sidebar_state='collapsed')
 
@@ -26,6 +26,8 @@ conta_df = pd.DataFrame(conta,columns=["Empresa","Conta","Cod_contabil","Tipo"])
 contas_por_codigo = dict(zip(conta_df["Cod_contabil"], conta_df["Conta"]))
 st.title(f"Boletim de caixa online - GCONT - {st.session_state.get('name')}")
 st.divider()
+portadores = get_portador()
+st.radio("Selecione a conta a ser utilizada")
 col1,col2 = st.columns([1.5,3.5])
 with col1:
     st.subheader("Novo lançamento")
@@ -60,7 +62,7 @@ with col2:
     lancto=get_lancto(empresa)
     lancto_df = pd.DataFrame(
         lancto,
-        columns=["Id","Data", "Valor", "Histórico", "Complemento", "Conta", "Tipo"],
+        columns=["Id","Data", "Valor", "Histórico", "Complemento", "Conta", "Tipo","Portador"],
     )
 
     if not lancto_df.empty:

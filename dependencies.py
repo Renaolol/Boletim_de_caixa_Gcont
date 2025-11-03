@@ -52,6 +52,7 @@ config = {
 }
 
 db_config = config
+
 def conecta_banco():
     return psycopg2.connect(**db_config)
 
@@ -81,7 +82,6 @@ def cadastra_clientes (nome,codigo,cnpj,username,senha):
     conn.close()
 
     return("Cliente cadastrado")
-
 
 def cadastra_historico (cliente,descricao,cod_conta):
     conn=conecta_banco()
@@ -137,14 +137,14 @@ def get_contas(empresa):
     conn.close()
     return contas
 
-def create_lancto(empresa,data,valor,historico,complemento,conta,tipo):
+def create_lancto(empresa,data,valor,historico,complemento,conta,tipo, portador):
     conn = conecta_banco()
     cursor=conn.cursor()
     query="""
-    INSERT INTO movimentacoes(empresa,data_mov,valor,historico,complemento,conta,tipo)
-    VALUES (%s,%s,%s,%s,%s,%s,%s)
+    INSERT INTO movimentacoes(empresa,data_mov,valor,historico,complemento,conta,tipo, Portador)
+    VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
     """
-    cursor.execute(query, (empresa,data,valor,historico,complemento,conta,tipo))
+    cursor.execute(query, (empresa,data,valor,historico,complemento,conta,tipo, portador))
     conn.commit()
     cursor.close()
     conn.close()
@@ -154,7 +154,7 @@ def get_lancto(empresa):
     conn=conecta_banco()
     cursor=conn.cursor()
     query="""
-        SELECT id, data_mov, valor, historico, complemento, conta, tipo
+        SELECT id, data_mov, valor, historico, complemento, conta, tipo, Portador
         FROM movimentacoes
         WHERE empresa = %s
         ORDER BY data_mov
@@ -173,6 +173,7 @@ def delete_lancto(ids):
     conn.commit()
     cursor.close()
     conn.close()
+
 def formata_valor(valor):
     if valor is None or (hasattr(valor, "__float__") and pd.isna(valor)):
         return "R$ 0,00"
@@ -189,6 +190,7 @@ def formata_valor(valor):
     bruto = bruto.replace(",", "_").replace(".", ",").replace("_", ".")
 
     return f"{sinal}R$ {bruto}"
+
 def update_lancto(lancto_id, data, valor, historico, complemento, conta, tipo):
     conn = conecta_banco()
     cursor = conn.cursor()
@@ -273,6 +275,7 @@ def get_dominio(empresa, data_inicial, data_final):
         
     saida = "\n".join(linhas)
     return saida
+
 def consulta_geral():
     conn = conecta_banco()
     cursor = conn.cursor()
@@ -298,3 +301,30 @@ def obter_empresa_codigo(user:str):
     conn.close()
 
     return row[0] if row and row[0] else None
+
+def create_portador(empresa, nome_conta,cod_contabil):
+    conn = conecta_banco()
+    cursor=conn.cursor()
+    query="""
+    INSERT INTO portadores(empresa,nome_conta,cod_contabil)
+    VALUES (%s,%s,%s)
+    """
+    cursor.execute(query, (empresa,nome_conta,cod_contabil))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return
+
+def get_portador(empresa):
+    conn=conecta_banco()
+    cursor=conn.cursor()
+    query="""
+        SELECT id, empresa, nome_conta, cod_contabil
+        FROM portadores
+        WHERE empresa = %s
+    """  
+    cursor.execute(query, (empresa, ))
+    portadores = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return portadores
