@@ -144,7 +144,7 @@ def create_lancto(empresa,data,valor,historico,complemento,conta,tipo, portador)
     INSERT INTO movimentacoes(empresa,data_mov,valor,historico,complemento,conta,tipo,portador)
     VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
     """
-    cursor.execute(query, (empresa,data,valor,historico,complemento,conta,tipo,portador, ))
+    cursor.execute(query, (empresa,data,valor,historico,complemento,conta,tipo,portador))
     conn.commit()
     cursor.close()
     conn.close()
