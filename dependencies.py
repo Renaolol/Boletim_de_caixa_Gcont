@@ -230,7 +230,7 @@ def get_dominio(empresa, data_inicial, data_final):
     conn = conecta_banco()
     cursor = conn.cursor()
     query = """
-        SELECT data_mov, conta, valor, historico, complemento, tipo
+        SELECT data_mov, conta, valor, historico, complemento, tipo, Portador
         FROM movimentacoes
         WHERE empresa = %s 
         AND data_mov BETWEEN %s AND %s
@@ -246,7 +246,7 @@ def get_dominio(empresa, data_inicial, data_final):
 
     dominio_df = pd.DataFrame(
         dominio,
-        columns=["Data", "Conta", "Valor", "Historico", "Complemento", "Tipo"],
+        columns=["Data", "Conta", "Valor", "Historico", "Complemento", "Tipo", "Portador"],
     )
 
     linhas = []
@@ -264,12 +264,12 @@ def get_dominio(empresa, data_inicial, data_final):
         if str(row["Tipo"]).lower() == "entrada":
             linha = (
                 "|6000|X||||\n"
-                f"|6100|{data_fmt}|5|{row['Conta']}|{valor_fmt}||{descricao}||||"
+                f"|6100|{data_fmt}|{row['Portador']}|{row['Conta']}|{valor_fmt}||{descricao}||||"
             )
         else:
             linha = (
                 "|6000|X||||\n"
-                f"|6100|{data_fmt}|{row['Conta']}|5|{valor_fmt}||{descricao}||||"
+                f"|6100|{data_fmt}|{row['Conta']}|{row['Portador']}|{valor_fmt}||{descricao}||||"
             )
         linhas.append(linha)
         
