@@ -90,7 +90,7 @@ with col2:
     display_df["Valor"] = display_df["Valor"].apply(formata_valor)
     display_df["Saldo"] = display_df["Saldo"].apply(formata_valor)    
     editor_df = lancto_df.copy()
-    editor_df["Data"] = editor_df["Data"].dt.date 
+    editor_df["Data"] = editor_df["Data"].dt.strftime("%d/%m/%Y")
     editor_df["Saldo"] = editor_df["Saldo"].apply(formata_valor)          # aceita DateColumn
     edited_df = st.data_editor(
     editor_df[["Id", "Data", "Valor", "Histórico", "Complemento", "Conta", "Tipo", "Saldo"]],
