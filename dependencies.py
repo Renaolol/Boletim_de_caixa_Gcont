@@ -141,10 +141,10 @@ def create_lancto(empresa,data,valor,historico,complemento,conta,tipo, portador)
     conn = conecta_banco()
     cursor=conn.cursor()
     query="""
-    INSERT INTO movimentacoes(empresa,data_mov,valor,historico,complemento,conta,tipo, Portador)
+    INSERT INTO movimentacoes(empresa,data_mov,valor,historico,complemento,conta,tipo,Portador)
     VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
     """
-    cursor.execute(query, (empresa,data,valor,historico,complemento,conta,tipo, portador))
+    cursor.execute(query, (empresa,data,valor,historico,complemento,conta,tipo,portador, ))
     conn.commit()
     cursor.close()
     conn.close()
