@@ -27,7 +27,7 @@ contas_por_codigo = dict(zip(conta_df["Cod_contabil"], conta_df["Conta"]))
 st.title(f"Boletim de caixa online - GCONT - {st.session_state.get('name')}")
 st.divider()
 portadores = get_portador(empresa)
-st.radio("Selecione a conta a ser utilizada",portadores[2])
+st.radio("Selecione a conta a ser utilizada",portadores[[2]])
 col1,col2 = st.columns([1.5,3.5])
 with col1:
     st.subheader("Novo lançamento")
