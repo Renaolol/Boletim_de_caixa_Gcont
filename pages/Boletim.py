@@ -28,7 +28,7 @@ st.title(f"Boletim de caixa online - GCONT - {st.session_state.get('name')}")
 st.divider()
 portadores = pd.DataFrame(get_portador(empresa),columns=["id","empresa","nome_conta","cod_contabil"])
 st.dataframe(portadores)
-st.radio("Selecione a conta a ser utilizada",data=portadores["nome_conta"],horizontal=True)
+st.radio("Selecione a conta a ser utilizada",options=portadores["nome_conta"],horizontal=True)
 col1,col2 = st.columns([1.5,3.5])
 with col1:
     st.subheader("Novo lançamento")
