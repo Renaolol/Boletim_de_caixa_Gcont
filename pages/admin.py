@@ -94,5 +94,6 @@ if username=="admin":
     with col6:
         portadores_list = get_portador(empresa)
         portadores_df = pd.DataFrame(portadores_list)
+        st.dataframe = portadores_df
 else:
     st.warning("Acesso restrito para administradores")        
