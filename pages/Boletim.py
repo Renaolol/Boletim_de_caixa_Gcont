@@ -51,7 +51,7 @@ with col1:
     cod_contabil = st.selectbox(
         "Conta",
         options=conta_df["Cod_contabil"],
-        format_func=lambda codigo: contas_por_codigo[codigo],
+        format_func=lambda codigo: f"{codigo} - {contas_por_codigo.get(codigo, '')}",
         width=300,
     )
     tipo = st.radio("Tipo",["Entrada","Saída"],horizontal=True)
