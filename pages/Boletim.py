@@ -23,7 +23,9 @@ historico = get_historicos(empresa)
 historicos_df = pd.DataFrame(historico,columns=["Descricao"])
 conta = get_contas(empresa)
 conta_df = pd.DataFrame(conta,columns=["id","Empresa","Conta","Cod_contabil","Tipo"])
-contas_por_codigo = dict(zip(conta_df["Cod_contabil"], conta_df[["Conta"],["Tipo"]]))
+contas_por_codigo = {
+    row["Cod_contabil"]: f"{row['Conta']} ({row['Tipo']})" for _, row in conta_df.iterrows()
+}
 st.title(f"Boletim de caixa online - GCONT - {st.session_state.get('name')}")
 st.divider()
 portadores = pd.DataFrame(get_portador(empresa),columns=["id","empresa","nome_conta","cod_contabil"])
