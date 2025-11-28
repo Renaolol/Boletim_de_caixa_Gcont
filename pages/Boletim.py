@@ -23,7 +23,7 @@ historico = get_historicos(empresa)
 historicos_df = pd.DataFrame(historico,columns=["Descricao"])
 conta = get_contas(empresa)
 conta_df = pd.DataFrame(conta,columns=["id","Empresa","Conta","Cod_contabil","Tipo"])
-contas_por_codigo = dict(zip(conta_df["Cod_contabil"], conta_df["Conta"], conta_df["Tipo"]))
+contas_por_codigo = dict(zip(conta_df["Cod_contabil"], [conta_df["Conta"],conta_df["Tipo"]]))
 st.title(f"Boletim de caixa online - GCONT - {st.session_state.get('name')}")
 st.divider()
 portadores = pd.DataFrame(get_portador(empresa),columns=["id","empresa","nome_conta","cod_contabil"])
@@ -51,7 +51,7 @@ with col1:
     cod_contabil = st.selectbox(
         "Conta",
         options=conta_df["Cod_contabil"],
-        format_func=lambda codigo: f"{codigo} - {contas_por_codigo.get(codigo, '','')}",
+        format_func=lambda codigo: f"{codigo} - {contas_por_codigo.get(codigo, '')}",
         width=300,
     )
     tipo = st.radio("Tipo",["Entrada","Saída"],horizontal=True)
