@@ -293,3 +293,19 @@ def get_portador(empresa):
     cursor.close()
     conn.close()
     return portadores
+
+#Função para atualizar portador
+def update_portador(id_portador:int, empresa:int, nome_conta:str, cod_contabil:int):
+    conn = conecta_banco()
+    cursor = conn.cursor()
+    query = """
+        UPDATE portadores
+        SET empresa = %s,
+            nome_conta = %s,
+            cod_contabil = %s
+        WHERE id = %s
+    """
+    cursor.execute(query, (empresa, nome_conta, cod_contabil, id_portador))
+    conn.commit()
+    cursor.close()
+    conn.close()

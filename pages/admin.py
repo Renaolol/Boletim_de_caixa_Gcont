@@ -2,7 +2,7 @@ import streamlit as st
 from time import sleep
 from config_pag import set_background, get_logo
 from auth_guard import require_login
-from dependencies import cadastra_clientes ,get_clientes, get_historicos, cadastra_historico,create_conta,get_contas, update_conta, get_portador, create_portador
+from dependencies import cadastra_clientes ,get_clientes, get_historicos, cadastra_historico,create_conta,get_contas, update_conta, get_portador, create_portador, update_portador
 import pandas as pd
 get_logo()
 set_background()
@@ -93,7 +93,36 @@ if username=="admin":
             st.rerun()
     with col6:
         portadores_list = get_portador(empresa)
-        portadores_df = pd.DataFrame(portadores_list)
-        st.dataframe(portadores_df)
+        portadores_df = pd.DataFrame(
+            portadores_list,
+            columns=["id","Empresa","Nome Portador","Código Contábil"],
+        )
+        edited_portadores_df = st.data_editor(
+            portadores_df[["id","Empresa","Nome Portador","Código Contábil"]],
+            hide_index=True,
+            column_config={
+                "id": st.column_config.TextColumn("Id", disabled=True),
+            },
+        )
+        atualizar_portador = st.button("Atualizar portador")
+        if atualizar_portador:
+            base = portadores_df.set_index("id")
+            edits = edited_portadores_df.set_index("id")
+            change = edits.compare(base, keep_shape=False)
+            ids_alterados = change.index.unique()
+
+            for portador_id in ids_alterados:
+                registro = edits.loc[portador_id]
+                update_portador(
+                    int(portador_id),
+                    int(registro["Empresa"]),
+                    registro["Nome Portador"],
+                    int(registro["Código Contábil"]),
+                )
+            if len(ids_alterados) > 0:
+                st.success("Atualização salva")
+                st.rerun()
+            else:
+                st.info("Nenhuma alteração detectada.")
 else:
     st.warning("Acesso restrito para administradores")        
