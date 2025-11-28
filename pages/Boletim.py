@@ -27,7 +27,10 @@ contas_por_codigo = dict(zip(conta_df["Cod_contabil"], conta_df["Conta"]))
 st.title(f"Boletim de caixa online - GCONT - {st.session_state.get('name')}")
 st.divider()
 portadores = pd.DataFrame(get_portador(empresa),columns=["id","empresa","nome_conta","cod_contabil"])
-portador_select = st.radio("Selecione a conta a ser utilizada",options=portadores["cod_contabil"],horizontal=True,captions=portadores["nome_conta"])
+if empresa == 3:
+    portador_select = st.selectbox("Selecione a conta a ser utilizada",options=portadores["cod_contabil","nome_conta"])
+else:    
+    portador_select = st.radio("Selecione a conta a ser utilizada",options=portadores["cod_contabil"],horizontal=True,captions=portadores["nome_conta"])
 col1,col2 = st.columns([1.5,3.5])
 with col1:
     st.subheader("Novo lançamento")
