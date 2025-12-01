@@ -114,7 +114,6 @@ def create_lancto(empresa,data,valor,historico,complemento,conta,tipo, portador)
     conn.close()
     return
 #Função para pegar os lançamentos
-#AQUI AINDA PRECISO DE ATENÇÃO, FAZER BUSCAR APENAS OS LANÇAMENTOS VINCULADOS AO PORTADOR SELECIONADO
 def get_lancto(empresa, portador):
     conn=conecta_banco()
     cursor=conn.cursor()
