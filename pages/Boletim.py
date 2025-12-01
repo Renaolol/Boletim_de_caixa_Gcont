@@ -27,7 +27,6 @@ contas_por_codigo = {
     row["Cod_contabil"]: f"{row['Conta']} ({row['Tipo']})" for _, row in conta_df.iterrows()
 }
 st.title(f"Boletim de caixa online - GCONT - {st.session_state.get('name')}")
-st.subheader(f"Código {empresa}")
 st.divider()
 portadores = pd.DataFrame(get_portador(empresa),columns=["id","empresa","nome_conta","cod_contabil"])
 portador_labels = dict(zip(portadores["cod_contabil"], portadores["nome_conta"]))
