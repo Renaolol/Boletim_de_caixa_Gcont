@@ -31,7 +31,7 @@ st.subheader(f"Código {empresa}")
 st.divider()
 portadores = pd.DataFrame(get_portador(empresa),columns=["id","empresa","nome_conta","cod_contabil"])
 portador_labels = dict(zip(portadores["cod_contabil"], portadores["nome_conta"]))
-if empresa in ["3","183","83","74","84"]:
+if empresa in ["3","183","83","74","84",3,183,83,74,84]:
     portador_select = st.selectbox(
         "Selecione a conta a ser utilizada",
         options=portadores["cod_contabil"],

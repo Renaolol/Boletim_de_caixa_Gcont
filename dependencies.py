@@ -292,7 +292,6 @@ def get_portador(empresa):
     cursor.close()
     conn.close()
     return portadores
-
 #Função para atualizar portador
 def update_portador(id_portador:int, empresa:int, nome_conta:str, cod_contabil:int):
     conn = conecta_banco()
