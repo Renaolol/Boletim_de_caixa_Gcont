@@ -6,7 +6,7 @@ from datetime import date, datetime
 from pathlib import Path
 from auth_guard import require_login
 from dependencies import *
-import pypdf
+
 st.set_page_config(layout='wide', initial_sidebar_state='collapsed')
 
 get_logo()
