@@ -6,7 +6,7 @@ from decimal import Decimal, InvalidOperation
 import pandas as pd
 from datetime import date, datetime
 from pathlib import Path
-
+import pypdf
 config = {
     "host": "10.66.66.2",
     "dbname": "boletimcaixa",
@@ -307,3 +307,28 @@ def update_portador(id_portador:int, empresa:int, nome_conta:str, cod_contabil:i
     conn.commit()
     cursor.close()
     conn.close()
+#Função para transformar em PDF
+def create_pdf(empresa,data_inicial,data_final):
+    conn = conecta_banco()
+    cursor = conn.cursor()
+    query = """
+        SELECT data_mov, conta, valor, historico, complemento, tipo, Portador
+        FROM movimentacoes
+        WHERE empresa = %s 
+        AND data_mov BETWEEN %s AND %s
+        ORDER BY data_mov
+    """
+    cursor.execute(query, (empresa, data_inicial, data_final, ))
+    dominio = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    if not dominio:
+        return ""
+
+    dominio_df = pd.DataFrame(
+        dominio,
+        columns=["Data", "Conta", "Valor", "Historico", "Complemento", "Tipo", "Portador"],
+    ) 
+    pdf = pypdf.PdfWriter.append(dominio_df)   
+    return pdf

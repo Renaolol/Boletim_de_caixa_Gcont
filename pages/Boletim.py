@@ -5,8 +5,8 @@ import psycopg2 as pg
 from datetime import date, datetime
 from pathlib import Path
 from auth_guard import require_login
-from dependencies import obter_empresa_codigo,get_clientes,get_contas,get_historicos,create_lancto,get_lancto, delete_lancto, formata_valor,update_lancto,get_dominio,get_portador
-
+from dependencies import *
+import pypdf
 st.set_page_config(layout='wide', initial_sidebar_state='collapsed')
 
 get_logo()
@@ -157,3 +157,5 @@ with col2:
 
 st.divider()        
 exportar = st.download_button("Exportar arquivo.txt",get_dominio(empresa,data_inicial,data_final),"Lancamentos_dominio.txt")
+
+exportar_pdf = st.download_button("Exportar em PDF",create_pdf(empresa,data_inicial,data_final),"Boletim_de_Caixa.pdf")
