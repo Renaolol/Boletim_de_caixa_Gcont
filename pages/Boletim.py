@@ -161,4 +161,4 @@ exportar = st.download_button("Exportar arquivo.txt",get_dominio(empresa,data_in
 
 exportar_pdf = st.button("Exportar em PDF")
 if exportar_pdf:
-    create_pdf()
+    create_pdf(empresa,data_inicial,data_final)
