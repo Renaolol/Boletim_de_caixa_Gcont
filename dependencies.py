@@ -329,5 +329,6 @@ def create_pdf(empresa,data_inicial,data_final):
     pdf.add_page()
     pdf.set_font("Arial",size=12)
     for x in dominio:
-        pdf.write(5,x)
+        for y in x:
+            pdf.cell(200,10,y,align="L")
     return pdf.output("Boletim_caixa.pdf")
