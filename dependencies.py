@@ -326,4 +326,3 @@ def get_list_lancto(empresa,data_inicial,data_final):
     if not dominio:
         return ""
     return dominio
-#função para formatar valores
