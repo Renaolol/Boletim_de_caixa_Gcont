@@ -165,7 +165,7 @@ def gera_pdf(dominio:list):
     pdf.set_font("Arial",size=9)
     pdf.multi_cell(200,10,"BOLETIM DE CAIXA")
     for x in dominio:
-        y = (f"Data: {x[0].strftime('%d/%m/%Y')}| Conta: {x[1]} | Valor: {formata_valor(x[2])} | Historico: {x[3]} {x[4]} | Tipo: {x[5]} | Portador: {x[6]}")
+        y = (f"Data: {x[0].strftime('%d/%m/%Y')}| Conta: {x[1]} | Valor: {formata_valor(x[2])} | Historico: {x[3]} {x[4]} | Tipo: {x[5]}")
         pdf.multi_cell(200,10,y)   
     return bytes(pdf.output(dest="S").encode('latin-1'))
 
