@@ -6,7 +6,7 @@ from decimal import Decimal, InvalidOperation
 import pandas as pd
 from datetime import date, datetime
 from pathlib import Path
-import pypdf
+import fpdf
 config = {
     "host": "10.66.66.2",
     "dbname": "boletimcaixa",
@@ -330,6 +330,8 @@ def create_pdf(empresa,data_inicial,data_final):
         dominio,
         columns=["Data", "Conta", "Valor", "Historico", "Complemento", "Tipo", "Portador"],
     ) 
-    pdf_writer = pypdf.PdfWriter
-    pdf_writer.write(stream = dominio_df)
-    return pdf_writer
+    pdf = fpdf.FPDF(format='letter')
+    pdf.add_page()
+    pdf.set_font("Arial",size=12)
+    pdf.cell(200,10,dominio_df,ln=1,align="L")
+    return pdf.output("Boletim_caixa.pdf")
