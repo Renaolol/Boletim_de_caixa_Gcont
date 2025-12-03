@@ -308,7 +308,7 @@ def update_portador(id_portador:int, empresa:int, nome_conta:str, cod_contabil:i
     cursor.close()
     conn.close()
 #Função para transformar em PDF
-def create_pdf(empresa,data_inicial,data_final):
+def get_list_lancto(empresa,data_inicial,data_final):
     conn = conecta_banco()
     cursor = conn.cursor()
     query = """
