@@ -162,11 +162,10 @@ lista_lancto = get_list_lancto(empresa,data_inicial,data_final)
 def gera_pdf(dominio:list):
     pdf = fpdf.FPDF(format='letter')
     pdf.add_page()
-    pdf.set_font("Arial",size=12)
+    pdf.set_font("Arial",size=9)
     for x in dominio:
-        y = (f"Data: {x[0]}| Conta: {x[1]} | Valor: {x[2]} | Historico: {x[3]} {x[4]} | Tipo: {x[5]} | Portador: {x[6]}")
+        y = (f"Data: {x[0].strftime('%d/%m/%Y')}| Conta: {x[1]} | Valor: {x[2]} | Historico: {x[3]} {x[4]} | Tipo: {x[5]} | Portador: {x[6]} \n")
         pdf.cell(200,10,y)
-        pdf.ln()
     return bytes(pdf.output(dest="S").encode('latin-1'))
 
 exportar_pdf = st.download_button(label="Baixar PDF", data=gera_pdf(lista_lancto),file_name="Boletim_de_caixa.pdf",mime="application/pdf")
