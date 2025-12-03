@@ -325,13 +325,9 @@ def create_pdf(empresa,data_inicial,data_final):
 
     if not dominio:
         return ""
-
-    dominio_df = pd.DataFrame(
-        dominio,
-        columns=["Data", "Conta", "Valor", "Historico", "Complemento", "Tipo", "Portador"],
-    ) 
     pdf = fpdf.FPDF(format='letter')
     pdf.add_page()
     pdf.set_font("Arial",size=12)
-    pdf.write(5,dominio)
+    for x in dominio:
+        pdf.write(5,x)
     return pdf.output("Boletim_caixa.pdf")
