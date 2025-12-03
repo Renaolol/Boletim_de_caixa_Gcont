@@ -333,5 +333,5 @@ def create_pdf(empresa,data_inicial,data_final):
     pdf = fpdf.FPDF(format='letter')
     pdf.add_page()
     pdf.set_font("Arial",size=12)
-    pdf.cell(200,10,dominio_df,ln=1,align="L")
+    pdf.cell(200,10,dominio_df.all(),ln=1,align="L")
     return pdf.output("Boletim_caixa.pdf")
