@@ -326,3 +326,6 @@ def get_list_lancto(empresa,data_inicial,data_final):
     if not dominio:
         return ""
     return dominio
+#função para formatar valores
+def formata_valor(valor):
+    return f'{valor:,.2f}'.replace(",","X").replace(".",",").replace("X",".")
