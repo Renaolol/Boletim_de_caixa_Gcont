@@ -158,7 +158,7 @@ with col2:
 
 st.divider()        
 exportar = st.download_button("Exportar arquivo.txt",get_dominio(empresa,data_inicial,data_final),"Lancamentos_dominio.txt")
-
+lista_lancto = get_list_lancto(empresa,data_inicial,data_final)
 def gera_pdf(dominio:list):
     pdf = fpdf.FPDF(format='letter')
     pdf.add_page()
@@ -166,6 +166,6 @@ def gera_pdf(dominio:list):
     for x in dominio:
         y = (f"Data: {x[0]}| Conta: {x[1]} | Valor: {x[2]} | Historico: {x[3]} {x[4]} | Tipo: {x[5]} | Portador: {x[6]}")
         pdf.write(5,y)
-    return bytes(pdf.output())
+    return bytes(pdf.output(dest="S").encode('latin-1'))
 
-exportar_pdf = st.download_button(label="Baixar PDF", data=gera_pdf(get_list_lancto(empresa,data_inicial,data_final)),file_name="Boletim_de_caixa.pdf",mime="application/pdf")
+exportar_pdf = st.download_button(label="Baixar PDF", data=gera_pdf(lista_lancto),file_name="Boletim_de_caixa.pdf",mime="application/pdf")
