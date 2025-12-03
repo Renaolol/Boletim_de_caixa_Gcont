@@ -166,6 +166,7 @@ def gera_pdf(dominio:list):
     for x in dominio:
         y = (f"Data: {x[0]}| Conta: {x[1]} | Valor: {x[2]} | Historico: {x[3]} {x[4]} | Tipo: {x[5]} | Portador: {x[6]}")
         pdf.cell(200,10,y)
+        pdf.ln()
     return bytes(pdf.output(dest="S").encode('latin-1'))
 
 exportar_pdf = st.download_button(label="Baixar PDF", data=gera_pdf(lista_lancto),file_name="Boletim_de_caixa.pdf",mime="application/pdf")
