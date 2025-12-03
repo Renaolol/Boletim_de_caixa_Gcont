@@ -330,5 +330,6 @@ def create_pdf(empresa,data_inicial,data_final):
         dominio,
         columns=["Data", "Conta", "Valor", "Historico", "Complemento", "Tipo", "Portador"],
     ) 
-    pdf = pypdf.PdfWriter.write(stream=dominio_df) 
-    return pdf
+    pdf_writer = pypdf.PdfWriter
+    pdf_writer.write(stream = dominio_df)
+    return pdf_writer
