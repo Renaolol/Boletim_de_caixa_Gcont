@@ -158,4 +158,7 @@ with col2:
 st.divider()        
 exportar = st.download_button("Exportar arquivo.txt",get_dominio(empresa,data_inicial,data_final),"Lancamentos_dominio.txt")
 
-exportar_pdf = st.download_button("Exportar em PDF",create_pdf(empresa,data_inicial,data_final),"Boletim_de_Caixa.pdf")
+
+exportar_pdf = st.button("Exportar em PDF")
+if exportar_pdf:
+    create_pdf()
