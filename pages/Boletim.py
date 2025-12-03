@@ -160,8 +160,7 @@ exportar = st.download_button("Exportar arquivo.txt",get_dominio(empresa,data_in
 
 
 exportar_pdf = st.button("Exportar em PDF")
-if exportar_pdf:
-    
+if exportar_pdf: 
     dominio=create_pdf(empresa,data_inicial,data_final)
     pdf = fpdf.FPDF(format='letter')
     pdf.add_page()
@@ -169,4 +168,4 @@ if exportar_pdf:
     for x in dominio:
         y = (f"Data: {x[0]}| Conta: {x[1]} | Valor: {x[2]} | Historico: {x[3]} {x[4]} | Tipo: {x[5]} | Portador: {x[6]}")
         pdf.write(5,y)
-    pdf.output("Boletim_de_caixa.pdf")    
+    pdf.output("Boletim_de_caixa.pdf")

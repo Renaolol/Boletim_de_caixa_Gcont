@@ -325,11 +325,4 @@ def create_pdf(empresa,data_inicial,data_final):
 
     if not dominio:
         return ""
-    pdf = fpdf.FPDF(format='letter')
-    pdf.add_page()
-    pdf.set_font("Arial",size=12)
-    for x in dominio:
-        y = (f"Data: {x[0]}| Conta: {x[1]} | Valor: {x[2]} | Historico: {x[3]} {x[4]} | Tipo: {x[5]} | Portador: {x[6]}")
-        pdf.write(5,y)
-        
-    return pdf.output(name="Boletim_caixa.pdf")
+    return dominio
