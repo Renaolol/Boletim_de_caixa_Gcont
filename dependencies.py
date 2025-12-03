@@ -331,4 +331,4 @@ def create_pdf(empresa,data_inicial,data_final):
     for x in dominio:
         y = (f"Data: {x[0]}| Conta: {x[1]} | Valor: {x[2]} | Historico: {x[3]} {x[4]} | Tipo: {x[5]} | Portador: {x[6]}")
         pdf.write(5,y)
-    return pdf.output("Boletim_caixa.pdf","D")
+    return pdf.output(name="Boletim_caixa.pdf",dest="D")
