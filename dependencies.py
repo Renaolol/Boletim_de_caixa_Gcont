@@ -118,8 +118,11 @@ def get_lancto(empresa, portador):
     conn=conecta_banco()
     cursor=conn.cursor()
     query="""
-        SELECT id, data_mov, valor, historico, complemento, conta, tipo, portador
-        FROM movimentacoes
+        SELECT m.id, m.data_mov, m.valor, m.historico, m.complemento, c.conta, m.tipo, m.portador
+        FROM movimentacoes m
+        LEFT JOIN contas c
+        ON
+        m.empresa = c.empresa AND m.conta = c.cod_contabil
         WHERE empresa = %s AND portador = %s
         ORDER BY data_mov
     """  
