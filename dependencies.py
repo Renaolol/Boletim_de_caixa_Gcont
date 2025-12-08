@@ -312,11 +312,14 @@ def get_list_lancto(empresa,data_inicial,data_final):
     conn = conecta_banco()
     cursor = conn.cursor()
     query = """
-        SELECT data_mov, conta, valor, historico, complemento, tipo, Portador
-        FROM movimentacoes
-        WHERE empresa = %s 
-        AND data_mov BETWEEN %s AND %s
-        ORDER BY data_mov
+        SELECT m.data_mov, m.conta, c.conta, m.valor, m.historico, m.complemento, m.tipo, m.Portador
+        FROM movimentacoes m
+        LEFT JOIN contas c
+        ON
+        m.empresa = c.empresa AND m.conta = c.cod_contabil
+        WHERE m.empresa = %s 
+        AND m.data_mov BETWEEN %s AND %s
+        ORDER BY m.data_mov
     """
     cursor.execute(query, (empresa, data_inicial, data_final, ))
     dominio = cursor.fetchall()
