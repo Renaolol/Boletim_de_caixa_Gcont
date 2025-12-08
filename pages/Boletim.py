@@ -101,11 +101,11 @@ with col2:
             else:
                 lancto_df = lancto_df.loc[lancto_df["Data"].between(inicio, fim)]
     display_df = lancto_df.drop(columns=["Id"])
-    display_df["Data"] = display_df["Data"].strftime("%d/%m/%Y")
+    display_df["Data"] = display_df["Data"].dt.strftime("%d/%m/%Y")
     display_df["Valor"] = display_df["Valor"].apply(formata_valor)
     display_df["Saldo"] = display_df["Saldo"].apply(formata_valor)    
     editor_df = lancto_df.copy()
-    editor_df["Data"] = editor_df["Data"].dt.date 
+    editor_df["Data"] = editor_df["Data"].dt.date.strftime("%d/%m/%Y") 
     editor_df["Saldo"] = editor_df["Saldo"].apply(formata_valor)          # aceita DateColumn
     edited_df = st.data_editor(
     editor_df[["Id", "Data", "Valor", "Histórico", "Complemento", "Conta", "Tipo", "Saldo"]],
