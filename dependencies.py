@@ -123,8 +123,8 @@ def get_lancto(empresa, portador):
         LEFT JOIN contas c
         ON
         m.empresa = c.empresa AND m.conta = c.cod_contabil
-        WHERE empresa = %s AND portador = %s
-        ORDER BY data_mov
+        WHERE m.empresa = %s AND m.portador = %s
+        ORDER BY m.data_mov
     """  
     cursor.execute(query, (empresa, portador, ))
     lancto = cursor.fetchall()
