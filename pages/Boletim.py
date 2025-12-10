@@ -75,7 +75,9 @@ with col1:
         elif complemento =="":
             st.warning("Informe um Complemento de Histórico")
         elif tipo == "Depósito":
-            create_lancto_deposito(empresa,data,valor,historico,complemento,cod_contabil,portador_select)   
+            create_lancto_deposito(empresa,data,valor,historico,complemento,cod_contabil,portador_select)
+        elif tipo == "Saque":
+            create_lancto_saque(empresa,data,valor,historico,complemento,cod_contabil,portador_select)       
         else:    
             create_lancto(empresa,data,valor,historico,complemento,cod_contabil,tipo,portador_select)
             st.rerun()
