@@ -131,6 +131,7 @@ def create_lancto_deposito(empresa,data,valor,historico,complemento,conta,portad
     cursor.close()
     conn.close()
     return
+#Função para criar os lançamentos de Saque
 def create_lancto_saque(empresa,data,valor,historico,complemento,conta,portador):
     conn = conecta_banco()
     cursor=conn.cursor()
