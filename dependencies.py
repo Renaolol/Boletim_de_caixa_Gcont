@@ -383,6 +383,6 @@ def gera_pdf_df(dominio:pd.DataFrame):
     pdf.add_page()
     pdf.set_font("Arial",size=9)
     pdf.multi_cell(200,10,"BOLETIM DE CAIXA")
-    y = dominio.to_clipboard()
+    y = dominio.to_markdown()
     pdf.multi_cell(200,10,y)   
     return bytes(pdf.output(dest="S").encode('latin-1'))
