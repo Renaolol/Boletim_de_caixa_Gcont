@@ -15,11 +15,13 @@ set_background()
 require_login()
 username = (st.session_state.get("username") or "").lower()
 user = (st.session_state.get('username'))
+#Caso o usuário for Administrador, habilita um campo para digitar o código da empresa desejada. Se não for administrador pega o código pela função
 if username=="admin":
     empresa = st.text_input("empresa",0,width=300)
 else:
     empresa = obter_empresa_codigo(user)
 
+#Primeiras buscar em relação a empresa selecionada: Históricos, Contas, e portadores.
 historico = get_historicos(empresa)
 historicos_df = pd.DataFrame(historico,columns=["Descricao"])
 conta = get_contas(empresa)
@@ -27,10 +29,14 @@ conta_df = pd.DataFrame(conta,columns=["id","Empresa","Conta","Cod_contabil","Ti
 contas_por_codigo = {
     row["Cod_contabil"]: f"{row['Conta']} ({row['Tipo']})" for _, row in conta_df.iterrows()
 }
-st.title(f"Boletim de caixa online - GCONT - {st.session_state.get('name')}")
-st.divider()
 portadores = pd.DataFrame(get_portador(empresa),columns=["id","empresa","nome_conta","cod_contabil"])
 portador_labels = dict(zip(portadores["cod_contabil"], portadores["nome_conta"]))
+
+#Cabeçalho
+st.title(f"Boletim de caixa online - GCONT - {st.session_state.get('name')}")
+st.divider()
+
+#Caso a empresa estiver em algum desses códigos específicados muda a forma de selecionar o portador. Serve para empresas que possuem muitos portadores
 if empresa in ["3","183","83","74","84",3,183,83,74,84]:
     portador_select = st.selectbox(
         "Selecione a conta a ser utilizada",
@@ -44,6 +50,7 @@ else:
         horizontal=True,
         format_func=lambda codigo: f"{codigo} - {portador_labels.get(codigo, '')}",
     )
+#Coluna 1 se refere as informações sobre o lançamento a ser cadastrado
 col1,col2 = st.columns([1.5,3.5])
 with col1:
     st.subheader("Novo lançamento")
@@ -51,22 +58,28 @@ with col1:
     valor = st.number_input("Valor",width=300)
     historico = st.selectbox("Histórico",historicos_df["Descricao"],width=300)
     complemento = st.text_area("Complemento",width=300)
-    cod_contabil = st.selectbox(
-        "Conta",
-        options=conta_df["Cod_contabil"],
-        format_func=lambda codigo: f"{codigo} - {contas_por_codigo.get(codigo, '')}"
-    )
-    tipo = st.radio("Tipo",["Entrada","Saída"],horizontal=True)
+    tipo = st.radio("Tipo",["Entrada","Saída","Depósito","Saque"],horizontal=True)
+    if tipo in ["Depósito","Saque"]:
+        cod_contabil = st.selectbox("Portador",portadores["cod_contabil"],format_func=lambda codigo: f"{codigo} - {portador_labels.get(codigo, '')}")
+    else:    
+        cod_contabil = st.selectbox(
+            "Conta",
+            options=conta_df["Cod_contabil"],
+            format_func=lambda codigo: f"{codigo} - {contas_por_codigo.get(codigo, '')}"
+        )
+    
     slv_lancto = st.button("Salvar Lançamento")
     if slv_lancto:
         if valor <=0:
             st.warning("Informe um valor")
         elif complemento =="":
             st.warning("Informe um Complemento de Histórico")
+        elif tipo == "Depósito":
+            create_lancto_deposito(empresa,data,valor,historico,complemento,cod_contabil,portador_select)   
         else:    
             create_lancto(empresa,data,valor,historico,complemento,cod_contabil,tipo,portador_select)
             st.rerun()
-
+#Coluna 2 faz a busca e mostra os lançamentos que foram feitos
 with col2:
     st.subheader("Lançamentos")
     coldata, coldata2, colespacamento = st.columns([1,1,5])

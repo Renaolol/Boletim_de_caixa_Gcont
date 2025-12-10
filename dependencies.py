@@ -350,7 +350,7 @@ def get_list_lancto(empresa,data_inicial,data_final):
     if not dominio:
         return ""
     return dominio
-
+#função para gerar um PDF dos lançamentos
 def gera_pdf(dominio:list):
     pdf = fpdf.FPDF(format='A4')
     pdf.add_page()
