@@ -119,14 +119,14 @@ def create_lancto_deposito(empresa,data,valor,historico,complemento,conta,portad
     cursor=conn.cursor()
     query="""
     INSERT INTO movimentacoes(empresa,data_mov,valor,historico,complemento,conta,tipo,portador)
-    VALUES (%s,%s,%s,%s,%s,%s,"Saída",%s)
+    VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
     """
     query2 = """
     INSERT INTO movimentacoes(empresa,data_mov,valor,historico,complemento,conta,tipo,portador)
-    VALUES (%s,%s,%s,%s,%s,%s,"Entrada",%s)
+    VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
     """
-    cursor.execute(query, (empresa,data,valor,historico,complemento,conta,portador))
-    cursor.execute(query2, (empresa,data,valor,historico,complemento,portador,conta))
+    cursor.execute(query, (empresa,data,valor,historico,complemento,conta,"Saída",portador))
+    cursor.execute(query2, (empresa,data,valor,historico,complemento,portador,"Entrada",conta))
     conn.commit()
     cursor.close()
     conn.close()
