@@ -10,6 +10,7 @@ import fpdf
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
 from reportlab.lib import colors
+import io
 config = {
     "host": "10.66.66.2",
     "dbname": "boletimcaixa",
@@ -383,6 +384,7 @@ def gera_pdf(dominio:list):
     return bytes(pdf.output(dest="S").encode('latin-1'))
 
 def gera_pdf_df(dominio:pd.DataFrame):
+    buffer = io.BytesIO()
     pdf = SimpleDocTemplate("Boletim-de-Caixa.pdf",pagesize=letter)
     table_style=TableStyle([('BACKGROUND', (0, 0), (-1, 0), colors.grey),
                             ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
@@ -404,5 +406,6 @@ def gera_pdf_df(dominio:pd.DataFrame):
     elements = []
     elements.append(titulo)
     elements.append(tabela)
-
-    return bytes(pdf.build(elements))
+    pdf.build(elements)
+    buffer.seek(0)
+    return buffer.getvalue()
