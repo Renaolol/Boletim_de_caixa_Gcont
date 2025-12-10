@@ -396,6 +396,7 @@ def gera_pdf_df(dominio:pd.DataFrame):
                             ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
                             ('FONTSIZE', (0, 1), (-1, -1), 12),
                             ('BOTTOMPADDING', (0, 1), (-1, -1), 8),])
+    dominio.fillna("conta")
     data = [dominio.columns.to_list()] + dominio.values.tolist()
     tabela = Table(data)
     tabela.setStyle(table_style)
