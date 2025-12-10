@@ -127,7 +127,7 @@ with col2:
         editor_df[["Id", "Data", "Valor", "Histórico", "Complemento", "Conta", "Tipo", "Saldo"]],
         hide_index=True,
         column_config={
-            "Data": st.column_config.DateColumn("Data"),
+            "Data": st.column_config.DateColumn("Data",format="DD/MM/YYYY"),
             "Valor": st.column_config.NumberColumn("Valor", format="%.2f"),
             "Saldo": st.column_config.NumberColumn("Saldo", disabled=True),
             "Id": st.column_config.TextColumn("Id", disabled=True),
@@ -176,4 +176,4 @@ with col2:
     st.divider()        
     exportar = st.download_button("Exportar arquivo.txt",get_dominio(empresa,data_inicial,data_final),"Lancamentos_dominio.txt")
     lista_lancto = get_list_lancto(empresa,data_inicial,data_final)
-    exportar_pdf = st.download_button(label="Baixar PDF", data=gera_pdf_df(edited_df),file_name="Boletim_de_caixa.pdf",mime="application/pdf")
+    exportar_pdf = st.download_button(label="Baixar PDF", data=gera_pdf_df(display_df),file_name="Boletim_de_caixa.pdf",mime="application/pdf")
