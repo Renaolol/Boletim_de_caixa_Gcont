@@ -7,6 +7,9 @@ import pandas as pd
 from datetime import date, datetime
 from pathlib import Path
 import fpdf
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+from reportlab.lib import colors
 config = {
     "host": "10.66.66.2",
     "dbname": "boletimcaixa",
@@ -378,11 +381,27 @@ def gera_pdf(dominio:list):
         y = (f"Data: {x[1]}| Conta: {x[5]} | Valor: {formata_valor(x[2])} | Historico: {x[4]} {x[4]} | Tipo: {x[6]} | Saldo:{x[7]}")
         pdf.multi_cell(200,10,y)   
     return bytes(pdf.output(dest="S").encode('latin-1'))
+
 def gera_pdf_df(dominio:pd.DataFrame):
-    pdf = fpdf.FPDF(format='A4')
-    pdf.add_page()
-    pdf.set_font("Arial",size=9)
-    pdf.multi_cell(200,10,"BOLETIM DE CAIXA")
-    y = dominio.to_markdown(index=False, tablefmt="github", numalign="right", stralign="left")
-    pdf.multi_cell(200,10,y)   
-    return bytes(pdf.output(dest="S").encode('latin-1'))
+    pdf = SimpleDocTemplate("Boletim-de-Caixa.pdf",pagesize=letter)
+    table_style=TableStyle([('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+                            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                            ('FONTSIZE', (0, 0), (-1, 0), 14),
+                            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+                            ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
+                            ('ALIGN', (0, 1), (-1, -1), 'CENTER'),
+                            ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+                            ('FONTSIZE', (0, 1), (-1, -1), 12),
+                            ('BOTTOMPADDING', (0, 1), (-1, -1), 8),])
+    data = [dominio.columns.to_list()] + dominio.values.to_list()
+    tabela = Table(data)
+    tabela.setStyle(table_style)
+    titulo = Paragraph("Boletim de Caixa")
+    elements = []
+    elements.append(titulo)
+    elements.append(tabela)
+
+    return bytes(pdf.build(elements))
