@@ -396,7 +396,7 @@ def gera_pdf_df(dominio:pd.DataFrame):
                             ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
                             ('FONTSIZE', (0, 1), (-1, -1), 12),
                             ('BOTTOMPADDING', (0, 1), (-1, -1), 8),])
-    data = [dominio.columns.to_list()] + dominio.values.to_list()
+    data = [dominio.columns.to_list()] + dominio.to_list()
     tabela = Table(data)
     tabela.setStyle(table_style)
     titulo = Paragraph("Boletim de Caixa")
