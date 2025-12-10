@@ -100,73 +100,65 @@ with col2:
                 lancto_df = lancto_df.iloc[0:0]
             else:
                 lancto_df = lancto_df.loc[lancto_df["Data"].between(inicio, fim)]
-    display_df = lancto_df.drop(columns=["Id"])
-    display_df["Data"] = display_df["Data"].dt.strftime("%d/%m/%Y")
-    display_df["Valor"] = display_df["Valor"].apply(formata_valor)
-    display_df["Saldo"] = display_df["Saldo"].apply(formata_valor)    
-    editor_df = lancto_df.copy()
+    try:            
+        display_df = lancto_df.drop(columns=["Id"])
+        display_df["Data"] = display_df["Data"].dt.strftime("%d/%m/%Y")
+        display_df["Valor"] = display_df["Valor"].apply(formata_valor)
+        display_df["Saldo"] = display_df["Saldo"].apply(formata_valor)    
+        editor_df = lancto_df.copy()
 
-    editor_df["Saldo"] = editor_df["Saldo"].apply(formata_valor)          # aceita DateColumn
-    edited_df = st.data_editor(
-    editor_df[["Id", "Data", "Valor", "Histórico", "Complemento", "Conta", "Tipo", "Saldo"]],
-    hide_index=True,
-    column_config={
-        "Data": st.column_config.DateColumn("Data"),
-        "Valor": st.column_config.NumberColumn("Valor", format="%.2f"),
-        "Saldo": st.column_config.NumberColumn("Saldo", disabled=True),
-        "Id": st.column_config.TextColumn("Id", disabled=True),
-    },
-    key="lancto_editor",
-)
-    
-    if st.button("Salvar alterações"):    
-        base = lancto_df.set_index("Id")
-        edits = edited_df.set_index("Id")
-        mudou = edits.compare(base, keep_shape=False)
-        ids_alterados = mudou.index.unique()
+        editor_df["Saldo"] = editor_df["Saldo"].apply(formata_valor)          # aceita DateColumn
+        edited_df = st.data_editor(
+        editor_df[["Id", "Data", "Valor", "Histórico", "Complemento", "Conta", "Tipo", "Saldo"]],
+        hide_index=True,
+        column_config={
+            "Data": st.column_config.DateColumn("Data"),
+            "Valor": st.column_config.NumberColumn("Valor", format="%.2f"),
+            "Saldo": st.column_config.NumberColumn("Saldo", disabled=True),
+            "Id": st.column_config.TextColumn("Id", disabled=True),
+        },
+        key="lancto_editor",
+        )
+        
+        if st.button("Salvar alterações"):    
+            base = lancto_df.set_index("Id")
+            edits = edited_df.set_index("Id")
+            mudou = edits.compare(base, keep_shape=False)
+            ids_alterados = mudou.index.unique()
 
-        for lancto_id in ids_alterados:
-            registro = edits.loc[lancto_id]
-            update_lancto(
-                int(lancto_id),                       # ← força int nativo
-                registro["Data"],                     # já virou date no editor
-                float(registro["Valor"]),             # float Python
-                registro["Histórico"],
-                registro["Complemento"],
-                str(registro["Conta"]),               # ou int(...) se for numérico
-                registro["Tipo"],
-            )
-        if len(ids_alterados) > 0:
-            st.success("Atualizações salvas.")
+            for lancto_id in ids_alterados:
+                registro = edits.loc[lancto_id]
+                update_lancto(
+                    int(lancto_id),                       # ← força int nativo
+                    registro["Data"],                     # já virou date no editor
+                    float(registro["Valor"]),             # float Python
+                    registro["Histórico"],
+                    registro["Complemento"],
+                    str(registro["Conta"]),               # ou int(...) se for numérico
+                    registro["Tipo"],
+                )
+            if len(ids_alterados) > 0:
+                st.success("Atualizações salvas.")
+                st.rerun()
+            else:
+                st.info("Nenhuma alteração detectada.")
+        selecionados = st.multiselect(
+            "Selecione os lançamentos para excluir",
+            options=lancto_df["Id"], 
+            format_func=lambda row_id: (
+                f"{lancto_df.loc[lancto_df['Id'] == row_id, 'Data'].iloc[0]:%d/%m/%Y} "
+                f"- {lancto_df.loc[lancto_df['Id'] == row_id, 'Histórico'].iloc[0]} "
+                f"- {lancto_df.loc[lancto_df['Id'] == row_id, 'Complemento'].iloc[0]}"
+                f"- {lancto_df.loc[lancto_df['Id'] == row_id, 'Valor'].iloc[0]:.2f}"
+            ),
+        )
+        if st.button("Excluir selecionados") and selecionados:
+            delete_lancto(selecionados)
+            st.success("Lançamentos removidos.")
             st.rerun()
-        else:
-            st.info("Nenhuma alteração detectada.")
-    selecionados = st.multiselect(
-        "Selecione os lançamentos para excluir",
-        options=lancto_df["Id"], 
-        format_func=lambda row_id: (
-            f"{lancto_df.loc[lancto_df['Id'] == row_id, 'Data'].iloc[0]:%d/%m/%Y} "
-            f"- {lancto_df.loc[lancto_df['Id'] == row_id, 'Histórico'].iloc[0]} "
-            f"- {lancto_df.loc[lancto_df['Id'] == row_id, 'Complemento'].iloc[0]}"
-            f"- {lancto_df.loc[lancto_df['Id'] == row_id, 'Valor'].iloc[0]:.2f}"
-        ),
-    )
-    if st.button("Excluir selecionados") and selecionados:
-        delete_lancto(selecionados)
-        st.success("Lançamentos removidos.")
-        st.rerun()
-
-st.divider()        
-exportar = st.download_button("Exportar arquivo.txt",get_dominio(empresa,data_inicial,data_final),"Lancamentos_dominio.txt")
-lista_lancto = get_list_lancto(empresa,data_inicial,data_final)
-def gera_pdf(dominio:list):
-    pdf = fpdf.FPDF(format='A4')
-    pdf.add_page()
-    pdf.set_font("Arial",size=9)
-    pdf.multi_cell(200,10,"BOLETIM DE CAIXA")
-    for x in dominio:
-        y = (f"Data: {x[0].strftime('%d/%m/%Y')}| Conta: {x[2]} | Valor: {formata_valor(x[3])} | Historico: {x[4]} {x[5]} | Tipo: {x[6]}")
-        pdf.multi_cell(200,10,y)   
-    return bytes(pdf.output(dest="S").encode('latin-1'))
-
-exportar_pdf = st.download_button(label="Baixar PDF", data=gera_pdf(lista_lancto),file_name="Boletim_de_caixa.pdf",mime="application/pdf")
+    except:
+        st.info("Selecione datas que contenham lançamentos")
+    st.divider()        
+    exportar = st.download_button("Exportar arquivo.txt",get_dominio(empresa,data_inicial,data_final),"Lancamentos_dominio.txt")
+    lista_lancto = get_list_lancto(empresa,data_inicial,data_final)
+    exportar_pdf = st.download_button(label="Baixar PDF", data=gera_pdf(lista_lancto),file_name="Boletim_de_caixa.pdf",mime="application/pdf")

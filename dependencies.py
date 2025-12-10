@@ -113,6 +113,24 @@ def create_lancto(empresa,data,valor,historico,complemento,conta,tipo, portador)
     cursor.close()
     conn.close()
     return
+#Função para criar os lançamentos de depósitos
+def create_lancto_deposito(empresa,data,valor,historico,complemento,conta,portador):
+    conn = conecta_banco()
+    cursor=conn.cursor()
+    query="""
+    INSERT INTO movimentacoes(empresa,data_mov,valor,historico,complemento,conta,tipo,portador)
+    VALUES (%s,%s,%s,%s,%s,%s,"Saída",%s)
+    """
+    query2 = """
+    INSERT INTO movimentacoes(empresa,data_mov,valor,historico,complemento,conta,tipo,portador)
+    VALUES (%s,%s,%s,%s,%s,%s,"Entrada",%s)
+    """
+    cursor.execute(query, (empresa,data,valor,historico,complemento,conta,portador))
+    cursor.execute(query2, (empresa,data,valor,historico,complemento,portador,conta))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return
 #Função para pegar os lançamentos
 def get_lancto(empresa, portador):
     conn=conecta_banco()
@@ -332,3 +350,13 @@ def get_list_lancto(empresa,data_inicial,data_final):
     if not dominio:
         return ""
     return dominio
+
+def gera_pdf(dominio:list):
+    pdf = fpdf.FPDF(format='A4')
+    pdf.add_page()
+    pdf.set_font("Arial",size=9)
+    pdf.multi_cell(200,10,"BOLETIM DE CAIXA")
+    for x in dominio:
+        y = (f"Data: {x[0].strftime('%d/%m/%Y')}| Conta: {x[2]} | Valor: {formata_valor(x[3])} | Historico: {x[4]} {x[5]} | Tipo: {x[6]}")
+        pdf.multi_cell(200,10,y)   
+    return bytes(pdf.output(dest="S").encode('latin-1'))
