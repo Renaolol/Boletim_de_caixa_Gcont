@@ -138,11 +138,11 @@ else:
             elif complemento =="":
                 st.warning("Informe um Complemento de Histórico")
             elif tipo == "Depósito":
-                create_lancto_deposito(empresa,data,valor,historico,complemento,cod_contabil,portador_select,str(st.session_state.get('name')))
+                create_lancto_deposito(empresa,data,valor,historico,complemento,cod_contabil,portador_select,str(st.session_state.get('username')))
             elif tipo == "Saque":
-                create_lancto_saque(empresa,data,valor,historico,complemento,cod_contabil,portador_select,str(st.session_state.get('name')))       
+                create_lancto_saque(empresa,data,valor,historico,complemento,cod_contabil,portador_select,str(st.session_state.get('username')))       
             else:    
-                create_lancto(empresa,data,valor,historico,complemento,cod_contabil,tipo,portador_select,str(st.session_state.get('name')))
+                create_lancto(empresa,data,valor,historico,complemento,cod_contabil,tipo,portador_select,str(st.session_state.get('username')))
                 st.rerun()
 #Coluna 2 faz a busca e mostra os lançamentos que foram feitos
     with col2:
