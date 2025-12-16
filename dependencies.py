@@ -423,7 +423,7 @@ def retorna_lanctos_receitas(empresa,dt_inicio,dt_fim):
         ON
             c.empresa = m.empresa AND c.cod_contabil = m.conta
         WHERE 
-            m.tipo = 'Entrada' AND m.empresa =%s AND m.data_mov >=%s AND m.data_mov <=%s
+            m.tipo = 'Entrada' AND m.empresa =%s AND m.data_mov >=%s AND m.data_mov <=%s AND c.conta IS NOT NULL
         GROUP BY c.conta
     """
     cursor.execute(query, (empresa,dt_inicio,dt_fim))
@@ -445,7 +445,7 @@ def retorna_lanctos_despesa(empresa,dt_inicio,dt_fim):
         ON
             c.empresa = m.empresa AND c.cod_contabil = m.conta
         WHERE 
-            m.tipo = 'Saída' AND m.empresa =%s AND m.data_mov >=%s AND m.data_mov <=%s
+            m.tipo = 'Saída' AND m.empresa =%s AND m.data_mov >=%s AND m.data_mov <=%s AND c.conta IS NOT NULL
         GROUP BY c.conta
     """
     cursor.execute(query, (empresa,dt_inicio,dt_fim))
@@ -453,3 +453,12 @@ def retorna_lanctos_despesa(empresa,dt_inicio,dt_fim):
     cursor.close()
     conn.close()
     return resultado  
+
+
+
+
+
+
+
+
+
