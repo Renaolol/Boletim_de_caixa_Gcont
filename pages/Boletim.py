@@ -239,7 +239,11 @@ exportar_pdf = st.download_button(label="Baixar PDF", data=gera_pdf_df(display_d
 st.divider()
 st.header('Relatório de contas')
 
-lista_receitas = retorna_lanctos_receitas(empresa)
-st.write(lista_receitas)
-lista_despesas = retorna_lanctos_despesa(empresa)
-st.write(lista_despesas)
+lista_receitas = retorna_lanctos_receitas(empresa,data_inicial,data_final)
+with st.expander("Receitas"):
+    for x in lista_receitas:
+        st.write(x[0], formata_valor(x[1]))
+lista_despesas = retorna_lanctos_despesa(empresa,data_inicial,data_final)
+with st.expander("Despesas"):
+    for x in lista_despesas:
+        st.write(x[0],formata_valor(x[1]))

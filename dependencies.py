@@ -410,7 +410,7 @@ def gera_pdf_df(dominio:pd.DataFrame):
     buffer.seek(0)
     return buffer.getvalue()
 #Função que retorna os lançamentos de Entrada
-def retorna_lanctos_receitas(empresa):
+def retorna_lanctos_receitas(empresa,dt_inicio,dt_fim):
     conn = conecta_banco()
     cursor = conn.cursor()
     query="""
@@ -423,16 +423,16 @@ def retorna_lanctos_receitas(empresa):
         ON
             c.empresa = m.empresa AND c.cod_contabil = m.conta
         WHERE 
-            m.tipo = 'Entrada' AND m.empresa =%s
+            m.tipo = 'Entrada' AND m.empresa =%s AND m.data_mov >=%s AND m.data_mov <=%s
         GROUP BY c.conta
     """
-    cursor.execute(query, (empresa,))
+    cursor.execute(query, (empresa,dt_inicio,dt_fim))
     resultado = cursor.fetchall()
     cursor.close()
     conn.close()
     return resultado
 #Função que retorna os lançamentos de Saída
-def retorna_lanctos_despesa(empresa):
+def retorna_lanctos_despesa(empresa,dt_inicio,dt_fim):
     conn = conecta_banco()
     cursor = conn.cursor()
     query="""
@@ -445,10 +445,10 @@ def retorna_lanctos_despesa(empresa):
         ON
             c.empresa = m.empresa AND c.cod_contabil = m.conta
         WHERE 
-            m.tipo = 'Saída' AND m.empresa =%s
+            m.tipo = 'Saída' AND m.empresa =%s AND m.data_mov >=%s AND m.data_mov <=%s
         GROUP BY c.conta
     """
-    cursor.execute(query, (empresa,))
+    cursor.execute(query, (empresa,dt_inicio,dt_fim))
     resultado = cursor.fetchall()
     cursor.close()
     conn.close()
