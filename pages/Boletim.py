@@ -52,7 +52,7 @@ else:
     )
 #Coluna 1 se refere as informações sobre o lançamento a ser cadastrado
 col1,col2 = st.columns([1.5,3.5])
-if username=='consultas_apae':
+if username=='consulta_apae':
     with col1:
         st.header("Usuário apenas de consultas")
     with col2:
