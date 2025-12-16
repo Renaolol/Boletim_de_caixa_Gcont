@@ -34,7 +34,7 @@ portador_labels = dict(zip(portadores["cod_contabil"], portadores["nome_conta"])
 
 #Cabeçalho
 st.title(f"Boletim de caixa online - GCONT - {st.session_state.get('name')}")
-st.write(f"Usuário conectado: {username}")
+st.write(username)
 st.divider()
 
 #Caso a empresa estiver em algum desses códigos específicados muda a forma de selecionar o portador. Serve para empresas que possuem muitos portadores
