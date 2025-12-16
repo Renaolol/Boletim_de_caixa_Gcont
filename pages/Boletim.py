@@ -122,7 +122,7 @@ else:
         elif tipo == "Entrada":
             cod_contabil = st.selectbox("Conta",options=conta_df[conta_df['Tipo']=="Receita"]["Cod_contabil"],format_func=lambda codigo: f"{codigo} - {contas_por_codigo.get(codigo, '')}")
         elif tipo == "Saída":
-            cod_contabil = st.selectbox("Conta",options=conta_df[conta_df['Tipo']=="Despesa"]["Cod_contabil"],format_func=lambda codigo: f"{codigo} - {contas_por_codigo.get(codigo, '')}")
+            cod_contabil = st.selectbox("Conta",options=conta_df[conta_df['Tipo']=="Despesas"]["Cod_contabil"],format_func=lambda codigo: f"{codigo} - {contas_por_codigo.get(codigo, '')}")
         else:    
             cod_contabil = st.selectbox(
                 "Conta",
