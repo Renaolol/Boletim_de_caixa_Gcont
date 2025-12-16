@@ -2,8 +2,7 @@ import streamlit as st
 from time import sleep
 from config_pag import set_background, get_logo
 from auth_guard import require_login
-from dependencies import cadastra_clientes ,get_clientes, get_historicos, cadastra_historico,create_conta,get_contas, update_conta, get_portador, create_portador, update_portador
-import pandas as pd
+from dependencies import *
 get_logo()
 set_background()
 require_login()
