@@ -34,7 +34,7 @@ portador_labels = dict(zip(portadores["cod_contabil"], portadores["nome_conta"])
 
 #Cabeçalho
 st.title(f"Boletim de caixa online - GCONT - {st.session_state.get('name')}")
-st.write(type(username))
+st.write(username)
 st.divider()
 
 #Caso a empresa estiver em algum desses códigos específicados muda a forma de selecionar o portador. Serve para empresas que possuem muitos portadores
@@ -138,11 +138,11 @@ else:
             elif complemento =="":
                 st.warning("Informe um Complemento de Histórico")
             elif tipo == "Depósito":
-                create_lancto_deposito(empresa,data,valor,historico,complemento,cod_contabil,portador_select,str(st.session_state.get('username')))
+                create_lancto_deposito(empresa,data,valor,historico,complemento,cod_contabil,portador_select,username)
             elif tipo == "Saque":
-                create_lancto_saque(empresa,data,valor,historico,complemento,cod_contabil,portador_select,str(st.session_state.get('username')))       
+                create_lancto_saque(empresa,data,valor,historico,complemento,cod_contabil,portador_select,username)       
             else:    
-                create_lancto(empresa,data,valor,historico,complemento,cod_contabil,tipo,portador_select,str(st.session_state.get('username')))
+                create_lancto(empresa,data,valor,historico,complemento,cod_contabil,tipo,portador_select,username)
                 st.rerun()
 #Coluna 2 faz a busca e mostra os lançamentos que foram feitos
     with col2:
