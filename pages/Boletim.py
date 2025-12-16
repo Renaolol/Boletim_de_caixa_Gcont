@@ -231,7 +231,15 @@ else:
                 st.rerun()
         except:
             st.info("Selecione datas que contenham lançamentos")
-        st.divider()        
-    exportar = st.download_button("Exportar arquivo.txt",get_dominio(empresa,data_inicial,data_final),"Lancamentos_dominio.txt")
-    lista_lancto = get_list_lancto(empresa,data_inicial,data_final)
-    exportar_pdf = st.download_button(label="Baixar PDF", data=gera_pdf_df(display_df),file_name="Boletim_de_caixa.pdf",mime="application/pdf")
+        st.divider()           
+exportar = st.download_button("Exportar arquivo.txt",get_dominio(empresa,data_inicial,data_final),"Lancamentos_dominio.txt")
+lista_lancto = get_list_lancto(empresa,data_inicial,data_final)
+exportar_pdf = st.download_button(label="Baixar PDF", data=gera_pdf_df(display_df),file_name="Boletim_de_caixa.pdf",mime="application/pdf")
+
+st.divider()
+st.header('Relatório de contas')
+
+lista_receitas = retorna_lanctos_receitas(empresa)
+st.write(lista_receitas)
+lista_despesas = retorna_lanctos_despesa(empresa)
+st.write(lista_despesas)

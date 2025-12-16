@@ -409,3 +409,47 @@ def gera_pdf_df(dominio:pd.DataFrame):
     pdf.build(elements)
     buffer.seek(0)
     return buffer.getvalue()
+#Função que retorna os lançamentos de Entrada
+def retorna_lanctos_receitas(empresa):
+    conn = conecta_banco()
+    cursor = conn.cursor()
+    query="""
+        SELECT 
+            c.conta, SUM(m.valor)
+        FROM
+            movimentacoes m
+        LEFT JOIN
+            contas c
+        ON
+            c.empresa = m.empresa AND c.cod_contabil = m.conta
+        WHERE 
+            m.tipo = 'Entrada' AND m.empresa =%s
+        GROUP BY c.conta
+    """
+    cursor.execute(query, (empresa,))
+    resultado = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return resultado
+#Função que retorna os lançamentos de Saída
+def retorna_lanctos_despesa(empresa):
+    conn = conecta_banco()
+    cursor = conn.cursor()
+    query="""
+        SELECT 
+            c.conta, SUM(m.valor)
+        FROM
+            movimentacoes m
+        LEFT JOIN
+            contas c
+        ON
+            c.empresa = m.empresa AND c.cod_contabil = m.conta
+        WHERE 
+            m.tipo = 'Saída' AND m.empresa =%s
+        GROUP BY c.conta
+    """
+    cursor.execute(query, (empresa,))
+    resultado = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return resultado  
