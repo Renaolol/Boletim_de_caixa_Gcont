@@ -105,38 +105,38 @@ def get_contas(empresa):
     conn.close()
     return contas
 #Função para criar um lançamento novo
-def create_lancto(empresa,data,valor,historico,complemento,conta,tipo, portador):
+def create_lancto(empresa,data,valor,historico,complemento,conta,tipo, portador,user):
     conn = conecta_banco()
     cursor=conn.cursor()
     query="""
-    INSERT INTO movimentacoes(empresa,data_mov,valor,historico,complemento,conta,tipo,portador)
-    VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
+    INSERT INTO movimentacoes(empresa,data_mov,valor,historico,complemento,conta,tipo,portador,usuario)
+    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
     """
-    cursor.execute(query, (empresa,data,valor,historico,complemento,conta,tipo,portador))
+    cursor.execute(query, (empresa,data,valor,historico,complemento,conta,tipo,portador,user))
     conn.commit()
     cursor.close()
     conn.close()
     return
 #Função para criar os lançamentos de depósitos
-def create_lancto_deposito(empresa,data,valor,historico,complemento,conta,portador):
+def create_lancto_deposito(empresa,data,valor,historico,complemento,conta,portador,user):
     conn = conecta_banco()
     cursor=conn.cursor()
     query="""
-    INSERT INTO movimentacoes(empresa,data_mov,valor,historico,complemento,conta,tipo,portador)
-    VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
+    INSERT INTO movimentacoes(empresa,data_mov,valor,historico,complemento,conta,tipo,portador,usuario)
+    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
     """
     query2 = """
-    INSERT INTO movimentacoes(empresa,data_mov,valor,historico,complemento,conta,tipo,portador)
-    VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
+    INSERT INTO movimentacoes(empresa,data_mov,valor,historico,complemento,conta,tipo,portador,usuario)
+    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
     """
-    cursor.execute(query, (empresa,data,valor,historico,complemento,conta,"Saída",portador))
-    cursor.execute(query2, (empresa,data,valor,historico,complemento,portador,"Entrada",conta))
+    cursor.execute(query, (empresa,data,valor,historico,complemento,conta,"Saída",portador,user))
+    cursor.execute(query2, (empresa,data,valor,historico,complemento,portador,"Entrada",conta,user))
     conn.commit()
     cursor.close()
     conn.close()
     return
 #Função para criar os lançamentos de Saque
-def create_lancto_saque(empresa,data,valor,historico,complemento,conta,portador):
+def create_lancto_saque(empresa,data,valor,historico,complemento,conta,portador,user):
     conn = conecta_banco()
     cursor=conn.cursor()
     query="""
