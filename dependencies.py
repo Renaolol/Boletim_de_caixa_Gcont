@@ -380,6 +380,7 @@ def gera_pdf(dominio:pd.DataFrame):
     pdf.multi_cell(200,10,"BOLETIM DE CAIXA") 
     colunas = (f'Data | Valor | Histórico | Complemento | Conta | Tipo | Portador | Saldo')
     pdf.multi_cell(200,10,colunas)
+    dominio.fillna("Transferência")
     for x in dominio.values:
         pdf.cell(10,10,x[0])
         pdf.cell(10,10,x[1])
