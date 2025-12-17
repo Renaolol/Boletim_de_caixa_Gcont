@@ -381,7 +381,7 @@ def gera_pdf(dominio:pd.DataFrame):
     colunas = (f'Data | Valor | Histórico | Complemento | Conta | Tipo | Portador | Saldo')
     pdf.multi_cell(200,10,colunas)
     for x in dominio.values:
-        y = (f"{x[0]}|{formata_valor(x[1])}|{x[2]}|{x[3]}|{x[4]}|{x[5]}|{x[6]}|{x[7]}")
+        y = (f"{x[0]}|{x[1]}|{x[2]}|{x[3]}|{x[4]}|{x[5]}|{x[6]}|{x[7]}")
         pdf.multi_cell(200,10,y)   
     return bytes(pdf.output(dest="S").encode('latin-1'))
 
