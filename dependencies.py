@@ -378,7 +378,7 @@ def gera_pdf(dominio:pd.DataFrame):
     pdf.add_page()
     pdf.set_font("Arial",size=9)
     pdf.multi_cell(200,10,"BOLETIM DE CAIXA") 
-    colunas = dominio.columns.values
+    colunas = dominio.to_latex()
     pdf.multi_cell(200,10,colunas)
     for x in dominio.values:
         y = (f"{x[1]}|{x[5]}|{formata_valor(x[2])}|{x[3]} {x[4]}|{x[6]}|{x[7]}")
