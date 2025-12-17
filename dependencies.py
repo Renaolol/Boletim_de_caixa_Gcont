@@ -386,7 +386,7 @@ def gera_pdf(dominio:pd.DataFrame):
         pdf.cell(20,10,x[1])
         pdf.cell(30,10,x[2])
         pdf.cell(40,10,x[3][:20])
-        pdf.cell(30,10,x[4])
+        pdf.cell(30,10,x[4][:15])
         pdf.cell(20,10,x[5])
         pdf.cell(10,10,str(x[6]))
         pdf.cell(20,10,x[7])
