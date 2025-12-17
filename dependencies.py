@@ -392,33 +392,6 @@ def gera_pdf(dominio:pd.DataFrame):
         pdf.cell(20,10,x[7])
         pdf.multi_cell(20,10,"\n") 
     return bytes(pdf.output(dest="S").encode('latin-1'))
-
-def gera_pdf_df(dominio:pd.DataFrame):
-    buffer = io.BytesIO()
-    pdf = SimpleDocTemplate("Boletim-de-Caixa.pdf",pagesize=letter)
-    table_style=TableStyle([('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-                            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-                            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-                            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                            ('FONTSIZE', (0, 0), (-1, 0), 14),
-                            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-                            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-                            ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
-                            ('ALIGN', (0, 1), (-1, -1), 'CENTER'),
-                            ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
-                            ('FONTSIZE', (0, 1), (-1, -1), 12),
-                            ('BOTTOMPADDING', (0, 1), (-1, -1), 8),])
-    dominio.fillna("conta")
-    data = [dominio.columns.to_list()] + dominio.values.tolist()
-    tabela = Table(data)
-    tabela.setStyle(table_style)
-    titulo = Paragraph("Boletim de Caixa")
-    elements = []
-    elements.append(titulo)
-    elements.append(tabela)
-    pdf.build(elements)
-    buffer.seek(0)
-    return buffer.getvalue()
 #Função que retorna os lançamentos de Entrada
 def retorna_lanctos_receitas(empresa,dt_inicio,dt_fim):
     conn = conecta_banco()
