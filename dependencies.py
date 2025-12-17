@@ -388,7 +388,7 @@ def gera_pdf(dominio:pd.DataFrame):
         pdf.cell(10,10,x[3])
         pdf.cell(10,10,x[4])
         pdf.cell(10,10,x[5])
-        pdf.cell(10,10,x[6])
+        pdf.cell(10,10,str(x[6]))
         pdf.cell(10,10,x[7])
         pdf.multi_cell(20,10,"\n") 
     return bytes(pdf.output(dest="S").encode('latin-1'))
