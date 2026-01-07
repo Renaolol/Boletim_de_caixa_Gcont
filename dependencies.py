@@ -11,6 +11,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
 from reportlab.lib import colors
 import io
+from unidecode import unidecode
 config = {
     "host": "10.66.66.2",
     "dbname": "boletimcaixa",
@@ -265,18 +266,19 @@ def get_dominio(empresa, data_inicial, data_final):
         else:
             data_fmt = str(data_valor)
 
-        descricao = " ".join(filter(None, [row["Historico"], row["Complemento"]])).strip()
-        valor_fmt = f"{float(row['Valor']):.2f}"
+        descricao = unidecode(" ".join(filter(None, [row["Historico"], row["Complemento"]])).strip().replace(''))
+        valor_fmt = f"{row['Valor']:.2f}"
+        valor_fmt_virgula = valor_fmt.replace('.',',')
 
         if str(row["Tipo"]).lower() == "entrada":
             linha = (
                 "|6000|X||||\n"
-                f"|6100|{data_fmt}|{row['Portador']}|{row['Conta']}|{valor_fmt}||{descricao}||||"
+                f"|6100|{data_fmt}|{row['Portador']}|{row['Conta']}|{valor_fmt_virgula}||{descricao}||||"
             )
         else:
             linha = (
                 "|6000|X||||\n"
-                f"|6100|{data_fmt}|{row['Conta']}|{row['Portador']}|{valor_fmt}||{descricao}||||"
+                f"|6100|{data_fmt}|{row['Conta']}|{row['Portador']}|{valor_fmt_virgula}||{descricao}||||"
             )
         linhas.append(linha)
         

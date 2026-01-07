@@ -5,3 +5,4 @@ streamlit-authenticator == 0.4.1
 fpdf == 1.7.2
 reportlab == 4.3.1
 numpy == 2.2.3
+unidecode == 1.4.0
