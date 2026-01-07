@@ -266,7 +266,7 @@ def get_dominio(empresa, data_inicial, data_final):
         else:
             data_fmt = str(data_valor)
 
-        descricao = unidecode(" ".join(filter(None, [row["Historico"], row["Complemento"]])).strip().replace(''))
+        descricao = unidecode(" ".join(filter(None, [row["Historico"], row["Complemento"]])).strip())
         valor_fmt = f"{row['Valor']:.2f}"
         valor_fmt_virgula = valor_fmt.replace('.',',')
 
