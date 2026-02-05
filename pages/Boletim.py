@@ -117,8 +117,8 @@ else:
         valor = st.number_input("Valor",width=300)
         historico = st.selectbox("Histórico",historicos_df["Descricao"],width=300)
         complemento = st.text_area("Complemento",width=300)
-        tipo = st.radio("Tipo",["Entrada","Saída","Depósito","Saque"],horizontal=True)
-        if tipo in ["Depósito","Saque"]:
+        tipo = st.radio("Tipo",["Entrada","Saída","Transferencia"],horizontal=True)
+        if tipo == "Transferencia":
             cod_contabil = st.selectbox("Portador",portadores["cod_contabil"],format_func=lambda codigo: f"{codigo} - {portador_labels.get(codigo, '')}")
         elif tipo == "Entrada":
             cod_contabil = st.selectbox("Conta",options=conta_df[conta_df['Tipo']=="Receita"]["Cod_contabil"],format_func=lambda codigo: f"{codigo} - {contas_por_codigo.get(codigo, '')}")
@@ -137,10 +137,8 @@ else:
                 st.warning("Informe um valor")
             elif complemento =="":
                 st.warning("Informe um Complemento de Histórico")
-            elif tipo == "Depósito":
-                create_lancto_deposito(empresa,data,valor,historico,complemento,cod_contabil,portador_select,username)
-            elif tipo == "Saque":
-                create_lancto_saque(empresa,data,valor,historico,complemento,cod_contabil,portador_select,username)       
+            elif tipo == "Transferencia":
+                create_lancto_deposito(empresa,data,valor,historico,complemento,cod_contabil,portador_select,username)       
             else:    
                 create_lancto(empresa,data,valor,historico,complemento,cod_contabil,tipo,portador_select,username)
                 st.rerun()
@@ -237,9 +235,11 @@ else:
         except:
             st.info("Selecione datas que contenham lançamentos")
         st.divider()           
-exportar = st.download_button("Exportar arquivo.txt",get_dominio(empresa,data_inicial,data_final),"Lancamentos_dominio.txt")
+exportar = st.download_button("Exportar arquivo.txt",get_dominio(empresa,data_inicial,data_final),
+                              "Lancamentos_dominio.txt")
 lista_lancto = get_list_lancto(empresa,data_inicial,data_final)
-exportar_pdf = st.download_button(label="Baixar PDF", data=gera_pdf(display_df),file_name="Boletim_de_caixa.pdf",mime="application/pdf")
+exportar_pdf = st.download_button(label="Baixar PDF", data=gera_pdf(display_df),
+                                  file_name="Boletim_de_caixa.pdf",mime="application/pdf")
 
 st.divider()
 st.header('Relatório de contas')
