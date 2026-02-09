@@ -21,13 +21,13 @@ DBNAME = os.getenv("dbname")
 
 #Função para conectar no Banco de dados!! (BANCO DE DADOS FÍSICO)
 def conecta_banco():
-    return psycopg2.connect(psycopg2.connect(
+    return psycopg2.connect(
         user=USER,
         password=PASSWORD,
         host=HOST,
         port=PORT,
         dbname=DBNAME
-    ))
+    )
 #Função para pegar os clientes
 def get_clientes():
     conn= conecta_banco()
