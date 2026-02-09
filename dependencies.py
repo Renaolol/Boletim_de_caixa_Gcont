@@ -12,18 +12,22 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
 from reportlab.lib import colors
 import io
 from unidecode import unidecode
-config = {
-    "host": "10.66.66.2",
-    "dbname": "boletimcaixa",
-    "user": "postgres",
-    "password": "0176",
-    "port":"5432",
-}
 
-db_config = config
+USER = os.getenv("user")
+PASSWORD = os.getenv("password")
+HOST = os.getenv("host")
+PORT = os.getenv("port")
+DBNAME = os.getenv("dbname")
+
 #Função para conectar no Banco de dados!! (BANCO DE DADOS FÍSICO)
 def conecta_banco():
-    return psycopg2.connect(**db_config)
+    return psycopg2.connect(psycopg2.connect(
+        user=USER,
+        password=PASSWORD,
+        host=HOST,
+        port=PORT,
+        dbname=DBNAME
+    ))
 #Função para pegar os clientes
 def get_clientes():
     conn= conecta_banco()
