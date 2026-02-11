@@ -443,6 +443,19 @@ def retorna_lanctos_despesa(empresa,dt_inicio,dt_fim):
     conn.close()
     return resultado  
 
+def get_nome_portador(empresa,portador):
+    conn=conecta_banco()
+    cursor=conn.cursor()
+    query="""
+        SELECT nome_conta
+        FROM portadores
+        WHERE empresa = %s and cod_contabil = %s
+    """  
+    cursor.execute(query, (empresa, portador, ))
+    portadores = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return portadores
 
 
 

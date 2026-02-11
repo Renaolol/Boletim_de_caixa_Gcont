@@ -238,7 +238,8 @@ else:
 exportar = st.download_button("Exportar arquivo.txt",get_dominio(empresa,data_inicial,data_final),
                               "Lancamentos_dominio.txt")
 lista_lancto = get_list_lancto(empresa,data_inicial,data_final)
-exportar_pdf = st.download_button(label="Baixar PDF", data=gera_pdf(display_df,portador_select),
+exportar_pdf = st.download_button(label="Baixar PDF", data=gera_pdf(display_df,
+                                                            get_nome_portador(empresa,portador_select)[0][0]),
                                   file_name="Boletim_de_caixa.pdf",mime="application/pdf")
 
 st.divider()
