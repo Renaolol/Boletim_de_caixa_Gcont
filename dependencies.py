@@ -379,11 +379,11 @@ def get_list_lancto(empresa,data_inicial,data_final):
         return ""
     return dominio
 #função para gerar um PDF dos lançamentos
-def gera_pdf(dominio:pd.DataFrame):
+def gera_pdf(dominio:pd.DataFrame,conta:str):
     pdf = fpdf.FPDF(format='A4')
     pdf.add_page()
     pdf.set_font("Arial",size=9)
-    pdf.multi_cell(200,10,"BOLETIM DE CAIXA") 
+    pdf.multi_cell(200,10,conta) 
     colunas = (f'Data | Valor | Histórico | Complemento | Conta | Tipo | Portador | Saldo')
     pdf.multi_cell(200,10,colunas)
     dominio = dominio.fillna("Transferência")
