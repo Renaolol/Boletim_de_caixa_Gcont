@@ -7,6 +7,7 @@ from pathlib import Path
 from auth_guard import require_login
 from dependencies import *
 from base64 import b64encode
+from io import BytesIO
 
 st.set_page_config(layout='wide', initial_sidebar_state='collapsed')
 
@@ -242,6 +243,15 @@ exportar_pdf = st.download_button(label="Baixar PDF", data=gera_pdf(display_df,
                                                             get_nome_portador(empresa,portador_select)[0][0]),
                                   file_name="Boletim_de_caixa.pdf",mime="application/pdf")
 
+buffer = BytesIO()
+with pd.ExcelWriter(buffer,engine="xlsxwriter") as writer:
+    display_df.to_excel(writer,sheet_name="Lanctos")
+    writer.close()
+@st.fragment()
+def baixa_excel():
+    st.download_button("Baixar Excel",buffer,file_name="Lanctos.xlsx")
+
+baixa_excel()
 st.divider()
 st.header('Relatório de contas')
 
