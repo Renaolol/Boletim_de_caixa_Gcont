@@ -249,7 +249,7 @@ with pd.ExcelWriter(buffer,engine="xlsxwriter") as writer:
     display_df.to_excel(writer,sheet_name="Lanctos",startrow=2)
     workbook=writer.book
     worksheet = writer.sheets["Lanctos"]
-    worksheet.write(1,1,f"{get_nome_portador(empresa,portador_select)[0][0]}")
+    worksheet.write(0,0,f"{get_nome_portador(empresa,portador_select)[0][0]}")
 @st.fragment()
 def baixa_excel():
     st.download_button("Baixar Excel",buffer,file_name=f"{get_nome_portador(empresa,portador_select)[0][0]}.xlsx")
