@@ -241,12 +241,12 @@ exportar = st.download_button("Exportar arquivo.txt",get_dominio(empresa,data_in
 lista_lancto = get_list_lancto(empresa,data_inicial,data_final)
 exportar_pdf = st.download_button(label="Baixar PDF", data=gera_pdf(display_df,
                                                             get_nome_portador(empresa,portador_select)[0][0]),
-                                  file_name="Boletim_de_caixa.pdf",mime="application/pdf")
+                                  file_name=f"{get_nome_portador(empresa,portador_select)[0][0]}.pdf",mime="application/pdf")
 
 buffer = BytesIO()
 with pd.ExcelWriter(buffer,engine="xlsxwriter") as writer:
     display_df.to_excel(writer,sheet_name="Lanctos",startrow=2,
-                        header=f"{get_nome_portador(empresa,portador_select)[0][0]}")
+                        header=[f"{get_nome_portador(empresa,portador_select)[0][0]}"])
 @st.fragment()
 def baixa_excel():
     st.download_button("Baixar Excel",buffer,file_name=f"{get_nome_portador(empresa,portador_select)[0][0]}.xlsx")
